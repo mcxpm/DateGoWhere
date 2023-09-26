@@ -1,6 +1,8 @@
 import {
     Button,
+    Center,
     Group,
+    Loader,
     Navbar,
     Text,
     UnstyledButton,
@@ -17,7 +19,7 @@ import {
     MdPostAdd,
     MdViewModule,
 } from 'react-icons/md';
-import { Link, useLoaderData, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { auth } from '../config/firebase';
 import { UserTab } from './UserTab';
@@ -91,10 +93,6 @@ const data = [
     { link: '/placeholder', label: 'Your Ideas', icon: MdPersonSearch },
 ];
 
-export const navBarLoader = () => {
-    return auth.currentUser;
-};
-
 export function NavBar() {
     const { classes, cx } = useStyles();
 
@@ -115,8 +113,7 @@ export function NavBar() {
         </Link>
     ));
 
-    // const [user] = useAuthState(auth);
-    const user = useLoaderData();
+    const [user, loading] = useAuthState(auth);
 
     const navigate = useNavigate();
 
@@ -140,7 +137,11 @@ export function NavBar() {
             </Navbar.Section>
 
             <Navbar.Section className={classes.footer}>
-                {user ? (
+                {loading ? (
+                    <Center>
+                        <Loader color="pink" />
+                    </Center>
+                ) : user ? (
                     <>
                         <UserTab
                             name={

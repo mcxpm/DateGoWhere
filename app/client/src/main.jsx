@@ -6,14 +6,12 @@ import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
 import ErrorPage from './ErrorPage';
 import Layout from './Layout';
 import AuthenticationForm from './components/AuthenticationForm';
-import { navBarLoader } from './components/NavBar';
 
 const router = createBrowserRouter([
     {
         path: '/',
         element: <Layout />,
         errorElement: <ErrorPage />,
-        loader: navBarLoader,
         children: [
             {
                 path: 'auth',
