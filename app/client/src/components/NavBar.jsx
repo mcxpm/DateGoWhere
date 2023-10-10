@@ -1,18 +1,8 @@
-import {
-    Button,
-    Center,
-    Group,
-    Loader,
-    Navbar,
-    Text,
-    UnstyledButton,
-    createStyles,
-    getStylesRef,
-    rem,
-} from '@mantine/core';
+import { Button, Group, Text, UnstyledButton } from '@mantine/core';
 import { signOut } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import {
+    MdHome,
     MdLogout,
     MdManageAccounts,
     MdPersonSearch,
@@ -22,105 +12,38 @@ import {
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { auth } from '../config/firebase';
+import classes from './NavBar.module.css';
 import { UserTab } from './UserTab';
 
-const useStyles = createStyles((theme) => ({
-    header: {
-        paddingBottom: theme.spacing.md,
-        marginBottom: `calc(${theme.spacing.md} * 1.5)`,
-        borderBottom: `${rem(1)} solid ${
-            theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[2]
-        }`,
-    },
-
-    footer: {
-        paddingTop: theme.spacing.md,
-        marginTop: theme.spacing.md,
-        borderTop: `${rem(1)} solid ${
-            theme.colorScheme === 'dark' ? theme.colors.dark[4] : theme.colors.gray[2]
-        }`,
-    },
-
-    link: {
-        ...theme.fn.focusStyles(),
-        display: 'flex',
-        alignItems: 'center',
-        textDecoration: 'none',
-        fontSize: theme.fontSizes.sm,
-        color: theme.colorScheme === 'dark' ? theme.colors.dark[1] : theme.colors.gray[7],
-        padding: `${theme.spacing.xs} ${theme.spacing.sm}`,
-        borderRadius: theme.radius.sm,
-        fontWeight: 500,
-
-        '&:hover': {
-            backgroundColor:
-                theme.colorScheme === 'dark'
-                    ? theme.colors.dark[6]
-                    : theme.colors.gray[0],
-            color: theme.colorScheme === 'dark' ? theme.white : theme.black,
-
-            [`& .${getStylesRef('icon')}`]: {
-                color: theme.colorScheme === 'dark' ? theme.white : theme.black,
-            },
-        },
-    },
-
-    linkIcon: {
-        ref: getStylesRef('icon'),
-        color: theme.colorScheme === 'dark' ? theme.colors.dark[2] : theme.colors.gray[6],
-        marginRight: theme.spacing.sm,
-    },
-
-    linkActive: {
-        '&, &:hover': {
-            backgroundColor: theme.fn.variant({
-                variant: 'light',
-                color: theme.primaryColor,
-            }).background,
-            color: theme.fn.variant({ variant: 'light', color: theme.primaryColor })
-                .color,
-            [`& .${getStylesRef('icon')}`]: {
-                color: theme.fn.variant({ variant: 'light', color: theme.primaryColor })
-                    .color,
-            },
-        },
-    },
-}));
-
 const data = [
+    { link: '/', label: 'Home', icon: MdHome },
     { link: '/ideas/browse', label: 'Browse Ideas', icon: MdViewModule },
     { link: '/ideas/create/1', label: 'Create New Idea', icon: MdPostAdd },
     { link: '/placeholder', label: 'Your Ideas', icon: MdPersonSearch },
 ];
 
 export function NavBar() {
-    const { classes, cx } = useStyles();
-
     const location = useLocation();
     const links = data.map((item) => (
         <Link
-            className={cx(classes.link, {
-                [classes.linkActive]: item.link === location.pathname,
-            })}
+            className={classes.link}
+            data-active={item.link === location.pathname || undefined}
             to={item.link}
             key={item.label}
-            onClick={(event) => {
-                setActive(item.label);
-            }}
         >
             <item.icon className={classes.linkIcon} stroke={1.5} size={20} />
             <span>{item.label}</span>
         </Link>
     ));
 
-    const [user, loading] = useAuthState(auth);
+    const [user] = useAuthState(auth);
 
     const navigate = useNavigate();
 
     return (
-        <Navbar width={{ sm: 240 }} p="md">
-            <Navbar.Section grow>
-                <Group className={classes.header} position="apart">
+        <div className={classes.navbar}>
+            <div className={classes.navbarMain}>
+                <Group className={classes.header} justify="space-between">
                     <Link to="/" style={{ textDecoration: 'none' }}>
                         <Text
                             fz={'lg'}
@@ -134,14 +57,10 @@ export function NavBar() {
                     </Link>
                 </Group>
                 {links}
-            </Navbar.Section>
+            </div>
 
-            <Navbar.Section className={classes.footer}>
-                {loading ? (
-                    <Center>
-                        <Loader color="pink" />
-                    </Center>
-                ) : user ? (
+            <div className={classes.footer}>
+                {user ? (
                     <>
                         <UserTab
                             name={
@@ -166,7 +85,6 @@ export function NavBar() {
                         </a>
 
                         <UnstyledButton
-                            sx={{ width: '100%' }}
                             className={classes.link}
                             onClick={() => {
                                 signOut(auth);
@@ -190,7 +108,7 @@ export function NavBar() {
                         Log in
                     </Button>
                 )}
-            </Navbar.Section>
-        </Navbar>
+            </div>
+        </div>
     );
 }

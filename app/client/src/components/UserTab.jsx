@@ -1,17 +1,8 @@
-import { Avatar, Group, Text, UnstyledButton, createStyles } from '@mantine/core';
+import { Avatar, Group, Text } from '@mantine/core';
 
-const useStyles = createStyles((theme) => ({
-    user: {
-        display: 'block',
-        width: '100%',
-        padding: theme.spacing.md,
-        color: theme.colorScheme === 'dark' ? theme.colors.dark[0] : theme.black,
-    },
-}));
+import classes from './UserTab.module.css';
 
-export function UserTab({ image, name, email, icon, ...others }) {
-    const { classes } = useStyles();
-
+export function UserTab({ image, name, ...others }) {
     return (
         <div className={classes.user} {...others}>
             <Group>

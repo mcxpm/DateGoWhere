@@ -1,5 +1,4 @@
 import {
-    Alert,
     Anchor,
     Button,
     Divider,
@@ -20,7 +19,7 @@ import {
     useSignInWithEmailAndPassword,
     useSignInWithGoogle,
 } from 'react-firebase-hooks/auth';
-import { redirect, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { auth } from '../config/firebase';
 import GoogleButton from './GoogleButton';
@@ -119,7 +118,7 @@ const AuthenticationForm = (props) => {
                         />
                     </Stack>
 
-                    <Group position="apart" mt="xl">
+                    <Group justify="space-between" mt="xl">
                         <Anchor
                             component="button"
                             type="button"
@@ -131,7 +130,7 @@ const AuthenticationForm = (props) => {
                                 ? 'Already have an account? Login'
                                 : "Don't have an account? Register"}
                         </Anchor>
-                        <Button type="submit" radius="xl">
+                        <Button type="submit" radius="md">
                             {upperFirst(type)}
                         </Button>
                     </Group>

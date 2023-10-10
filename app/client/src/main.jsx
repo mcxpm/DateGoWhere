@@ -1,11 +1,14 @@
-import { MantineProvider, Text } from '@mantine/core';
+import '@mantine/core/styles.css';
+
+import { createTheme, MantineProvider } from '@mantine/core';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { Outlet, RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 
+import AuthenticationForm from './components/AuthenticationForm';
+import HeroPage from './components/HeroPage/HeroPage';
 import ErrorPage from './ErrorPage';
 import Layout from './Layout';
-import AuthenticationForm from './components/AuthenticationForm';
 
 const router = createBrowserRouter([
     {
@@ -49,6 +52,7 @@ const router = createBrowserRouter([
                     <div>
                         landing page - maybe a small hero section to explain what the app
                         does
+                        <HeroPage />
                     </div>
                 ),
             },
@@ -60,13 +64,13 @@ const router = createBrowserRouter([
     },
 ]);
 
+const theme = createTheme({
+    primaryColor: 'pink',
+});
+
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
-        <MantineProvider
-            withGlobalStyles
-            withNormalizeCSS
-            theme={{ primaryColor: 'pink' }}
-        >
+        <MantineProvider withGlobalStyles withNormalizeCSS theme={theme}>
             <RouterProvider router={router} />
         </MantineProvider>
     </React.StrictMode>,
