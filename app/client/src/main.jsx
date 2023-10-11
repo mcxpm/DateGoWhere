@@ -38,7 +38,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: 'browse',
-                        element: <div>browse</div>,
+                        element: <div>Browse </div>
                     },
                 ],
             },
@@ -50,8 +50,6 @@ const router = createBrowserRouter([
                 path: '',
                 element: (
                     <div>
-                        landing page - maybe a small hero section to explain what the app
-                        does
                         <HeroPage />
                     </div>
                 ),
