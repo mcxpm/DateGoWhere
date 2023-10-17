@@ -7,6 +7,7 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 
 import AuthenticationForm from './components/AuthenticationForm';
+import BrowsePage from './components/BrowsePage/BrowsePage';
 import CreateIdea from './components/CreateIdea/CreateIdea';
 import HeroPage from './components/HeroPage/HeroPage';
 import Map from './components/Map';
@@ -45,7 +46,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: 'browse',
-                        element: <div>Browse </div>
+                        element: <BrowsePage />,
                     },
                 ],
             },
