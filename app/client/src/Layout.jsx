@@ -5,7 +5,7 @@ import { NavBar } from './components/NavBar';
 
 const Layout = () => {
     return (
-        <AppShell mih={'100svh'} navbar={{ width: 240 }} padding="md">
+        <AppShell mih={'100svh'} navbar={{ width: 240 }}>
             <AppShell.Navbar>
                 <NavBar />
             </AppShell.Navbar>
