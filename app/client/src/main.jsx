@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 
 import AuthenticationForm from './components/AuthenticationForm';
+import CreateIdea from './components/CreateIdea/CreateIdea';
 import HeroPage from './components/HeroPage/HeroPage';
 import ErrorPage from './ErrorPage';
 import Layout from './Layout';
@@ -30,7 +31,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: 'create/:id',
-                        element: <div>create</div>,
+                        element: <CreateIdea />,
                     },
                     {
                         path: 'edit/:id',

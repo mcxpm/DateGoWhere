@@ -1,5 +1,6 @@
 import { Button, Container, Overlay, Text,Title } from '@mantine/core';
 import { Link } from 'react-router-dom';
+
 import classes from './HeroPage.module.css';
 
 export default function HeroPage() {
@@ -13,7 +14,7 @@ export default function HeroPage() {
         zIndex={0}
       />
       <Container className={classes.container} size="xl">
-        <Title className={classes.title} gradient={{ from: 'pink', to: 'red', deg: 45 }}>DateGoWhere</Title>
+        <Title className={classes.title} >DateGoWhere</Title>
         <Text className={classes.description} mt="xl">
           Date Ideas by Singaporeans for Singaporeans
         </Text>
@@ -34,4 +35,3 @@ export default function HeroPage() {
     </div>
   );
 }
-// gradient="linear-gradient(180deg, rgba(255, 240, 246, 1) 30%, rgba(250, 162, 193, 1) 60%)"
