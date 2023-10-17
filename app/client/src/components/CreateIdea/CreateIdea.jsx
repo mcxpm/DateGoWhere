@@ -1,118 +1,169 @@
-import { Button, Group, Paper, Text, TextInput } from '@mantine/core';
-import { useState } from 'react';
+import {
+    Box,
+    Button,
+    Divider,
+    Group,
+    Paper,
+    SimpleGrid,
+    Stack,
+    Text,
+    TextInput,
+} from '@mantine/core';
+import { useRef, useState } from 'react';
+import { MdAdd, MdEdit, MdSave, MdUpload } from 'react-icons/md';
 
-import AddActivityForm from './AddActivityForm';
+import Map from '../Map';
+import ActivityForm from './ActivityForm';
 import classes from './CreateIdea.module.css';
-import EditActivityForm from './EditActivityForm';
 
 const CreateIdea = () => {
-    const [activity, setActivity] = useState({
-        start: '',
-        end: '',
-        name: '',
-        location: '',
-        description: '',
-        budget: '',
-        tags: [],
-    });
+    const ref = useRef(null);
+
     const emptyActivity = {
         start: '',
         end: '',
         name: '',
-        location: '',
+        location: {
+            name: '',
+            description: '',
+            latLng: null,
+        },
         description: '',
         budget: '',
         tags: [],
     };
 
+    const [title, setTitle] = useState('');
     const [activityList, setActivityList] = useState([]);
-    const [isAddingActivity, setIsAddingActivity] = useState(false);
 
-    const [editShownList, setEditShownList] = useState([]);
+    const [isEditingList, setIsEditingList] = useState([]);
 
-    const handleSaveActivity = () => {
-        setActivityList(() => [...activityList, activity]);
-        setEditShownList(() => [...editShownList, false]);
-        setIsAddingActivity(false);
-        setActivity(emptyActivity);
+    const handleSaveActivity = (idx) => {
+        const id = idx == -1 ? activityList.length - 1 : idx;
+        setIsEditingList((prev) => {
+            const newIsEditingList = [...prev];
+            newIsEditingList[id] = false;
+            return newIsEditingList;
+        });
     };
 
-    const handleDiscard = () => {
-        setActivity(emptyActivity);
-        setIsAddingActivity(false);
+    const handleDiscardActivity = (idx) => {
+        const id = idx == -1 ? activityList.length - 1 : idx;
+        setActivityList((prev) => {
+            const newActivityList = [...prev];
+            newActivityList.splice(id);
+            return newActivityList;
+        });
     };
 
     const handleAddActivity = () => {
-        setIsAddingActivity(true);
+        setActivityList((prev) => [...prev, emptyActivity]);
+        setIsEditingList((prev) => [...prev, true]);
     };
 
-    const handleEdit = (idx) => {
-        const updatedEditShownList = [...editShownList];
-        updatedEditShownList[idx] = !updatedEditShownList[idx];
-        setEditShownList(updatedEditShownList);
+    const handleEditActivity = (idx) => {
+        setIsEditingList((prev) => {
+            const newIsEditingList = [...prev];
+            newIsEditingList[idx] = !newIsEditingList[idx];
+
+            return newIsEditingList;
+        });
     };
 
-    const updateActivity = (key, idx, value) => {
-        const updatedActivityList = [...activityList];
-        updatedActivityList[idx][key] = value;
-        setActivityList(updatedActivityList);
+    const handleChangeActivity = (key, idx, value) => {
+        const id = idx == -1 ? activityList.length - 1 : idx;
+        setActivityList((prev) => {
+            const newActivityList = [...prev];
+            if (key == 'location') {
+                newActivityList[id][key] = {
+                    ...newActivityList[id][key],
+                    ...value,
+                };
+            } else {
+                newActivityList[id][key] = value;
+            }
+            return newActivityList;
+        });
     };
 
     return (
-        <Paper shadow="md" radius="lg" h={'100dvh'}>
-            <div className={classes.wrapper}>
-                <div className={classes.contacts}>
-                    <div>
-                        <TextInput
-                            label="Date Plan Name"
-                            placeholder="Date Title"
-                            mb={25}
-                        />
-                        <Text fw={500}>Date Activities</Text>
-                        {activityList.map((activity, idx) => (
-                            <EditActivityForm
+        <SimpleGrid h={'100dvh'} cols={{ base: 1, sm: 2 }} spacing={0}>
+            <Paper p={'md'} m={'xs'} withBorder shadow="xl" className={classes.leftPanel}>
+                <Stack gap={'sm'}>
+                    <TextInput
+                        label="Give your date a name!"
+                        placeholder="Date Name"
+                        withAsterisk
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                    />
+                    <Divider />
+                    {activityList.map((activity, idx) => {
+                        return !isEditingList[idx] ? (
+                            <Paper key={idx} p="xs" shadow="none">
+                                <Box className={classes.card}>
+                                    <Box>
+                                        <Text size="xs" c={'dimmed'} fw={500}>
+                                            {activity.start} - {activity.end}{' '}
+                                        </Text>
+                                        <Text truncate="end">
+                                            <Text component="span" fw={700}>
+                                                {activity.name}
+                                            </Text>
+                                            &nbsp;@&nbsp;
+                                            {activity.location.name
+                                                ? activity.location.name
+                                                : activity.location.description}
+                                        </Text>
+                                    </Box>
+                                    <MdEdit
+                                        style={{ placeSelf: 'center' }}
+                                        onClick={() => handleEditActivity(idx)}
+                                        color="grey"
+                                    />
+                                </Box>
+                            </Paper>
+                        ) : (
+                            <ActivityForm
                                 key={idx}
                                 activity={activity}
                                 idx={idx}
-                                editShownList={editShownList}
-                                handleEdit={handleEdit}
-                                updateActivity={updateActivity}
-                                activityList={activityList}
-                                classes={classes}
-                                handleDiscard={handleDiscard}
-                            />
-                        ))}
-                    </div>
-                    <div>
-                        {isAddingActivity && (
-                            <AddActivityForm
-                                activity={activity}
-                                setActivity={setActivity}
-                                handleDiscard={handleDiscard}
+                                handleChangeActivity={handleChangeActivity}
+                                handleDiscardActivity={handleDiscardActivity}
                                 handleSaveActivity={handleSaveActivity}
                             />
-                        )}
-
-                        <Group justify="space-between" mt="md">
-                            <Button
-                                type="submit"
-                                size="xs"
-                                color="rgba(255, 77, 77, 0.7)"
-                            >
-                                Save Draft
-                            </Button>
-                            <Button onClick={handleAddActivity} size="xs">
-                                Add activity
-                            </Button>
-                            <Button type="submit" size="xs">
-                                Submit
-                            </Button>
-                        </Group>
-                    </div>
-                </div>
-                <div>Insert Google Maps HERE</div>
-            </div>
-        </Paper>
+                        );
+                    })}
+                    <Button
+                        onClick={handleAddActivity}
+                        fullWidth
+                        variant="outline"
+                        leftSection={<MdAdd />}
+                    >
+                        Add activity
+                    </Button>
+                </Stack>
+                <Box>
+                    <Divider my={'sm'} />
+                    <Group justify="space-between">
+                        <Button variant="light" leftSection={<MdSave />}>
+                            Save Draft
+                        </Button>
+                        <Button
+                            variant="outline"
+                            color="green"
+                            onClick={() =>
+                                ref?.current?.calculateAndDisplayRoute(activityList)
+                            }
+                        >
+                            Get Route
+                        </Button>
+                        <Button rightSection={<MdUpload />}>Submit</Button>
+                    </Group>
+                </Box>
+            </Paper>
+            <Map activityList={activityList} ref={ref} />
+        </SimpleGrid>
     );
 };
 

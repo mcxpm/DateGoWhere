@@ -4,7 +4,7 @@ import { AiOutlineHeart } from 'react-icons/ai';
 import classes from './BrowsePage.module.css';
 const Idea = ({ idea }) => {
     const features = idea.badges.map((badge) => (
-        <Badge variant="light" key={badge.label} leftSection={badge.emoji}>
+        <Badge variant="light" key={badge.label + idea.title} leftSection={badge.emoji}>
             {badge.label}
         </Badge>
     ));

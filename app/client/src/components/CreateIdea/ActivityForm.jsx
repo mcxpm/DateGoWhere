@@ -10,15 +10,18 @@ import {
 } from '@mantine/core';
 import { TimeInput } from '@mantine/dates';
 
-const AddActivityForm = ({
+import LocationAutocomplete from '../LocationAutocomplete';
+
+const ActivityForm = ({
+    idx,
     activity,
-    setActivity,
-    handleDiscard,
+    handleChangeActivity,
+    handleDiscardActivity,
     handleSaveActivity,
 }) => {
     return (
         <form onSubmit={(event) => event.preventDefault()}>
-            <Paper shadow="md" radius="lg" p="sm">
+            <Paper shadow="none" p="sm">
                 <SimpleGrid cols={{ base: 1, sm: 3 }}>
                     <TimeInput
                         size="xs"
@@ -26,10 +29,7 @@ const AddActivityForm = ({
                         label="Start Time"
                         value={activity.start}
                         onChange={(e) =>
-                            setActivity({
-                                ...activity,
-                                start: e.target.value,
-                            })
+                            handleChangeActivity('start', idx, e.target.value)
                         }
                         placeholder="Time"
                         required
@@ -39,60 +39,43 @@ const AddActivityForm = ({
                         variant="filled"
                         label="End Time"
                         value={activity.end}
-                        onChange={(e) =>
-                            setActivity({
-                                ...activity,
-                                end: e.target.value,
-                            })
-                        }
+                        onChange={(e) => handleChangeActivity('end', idx, e.target.value)}
                         placeholder="Time"
                         required
                     />
                     <TextInput
+                        variant="filled"
                         size="xs"
                         label="Activity Name"
                         placeholder="Activity"
                         value={activity.name}
                         onChange={(e) =>
-                            setActivity({
-                                ...activity,
-                                name: e.target.value,
-                            })
+                            handleChangeActivity('name', idx, e.target.value)
                         }
                         required
                     />
                 </SimpleGrid>
-
-                <TextInput
-                    size="xs"
-                    placeholder="Location"
-                    required
-                    mt="8"
-                    value={activity.location}
-                    onChange={(e) =>
-                        setActivity({
-                            ...activity,
-                            location: e.target.value,
-                        })
-                    }
+                <LocationAutocomplete
+                    value={activity.location.description}
+                    handleChangeActivity={handleChangeActivity}
+                    idx={idx}
                 />
                 <Textarea
+                    label="Description"
+                    variant="filled"
                     size="xs"
                     radius="xs"
                     placeholder="Description"
                     value={activity.description}
                     onChange={(e) =>
-                        setActivity({
-                            ...activity,
-                            description: e.target.value,
-                        })
+                        handleChangeActivity('description', idx, e.target.value)
                     }
-                    mt="8"
                     autosize
                     maxRows={3}
                     required
                 />
                 <MultiSelect
+                    variant="filled"
                     size="xs"
                     label="Date Tags"
                     placeholder="Pick Category"
@@ -100,46 +83,41 @@ const AddActivityForm = ({
                     searchable
                     nothingFoundMessage="Nothing found..."
                     value={activity.tags}
-                    onChange={(value) =>
-                        setActivity({
-                            ...activity,
-                            tags: value,
-                        })
-                    }
+                    onChange={(value) => handleChangeActivity('tags', idx, value)}
                 />
 
                 <Grid align="end">
                     <Grid.Col span={6}>
                         <NumberInput
+                            variant="filled"
                             size="xs"
                             label="Budget"
                             placeholder="Cost"
                             value={activity.budget}
                             onChange={(value) =>
-                                setActivity({
-                                    ...activity,
-                                    budget: value,
-                                })
+                                handleChangeActivity('budget', idx, value)
                             }
                             prefix="$"
                         />
                     </Grid.Col>
                     <Grid.Col span={3}>
                         <Button
-                            onClick={handleDiscard}
+                            onClick={() => handleDiscardActivity(idx)}
                             variant="light"
                             color="red"
                             size="xs"
+                            fullWidth
                         >
                             Discard
                         </Button>
                     </Grid.Col>
                     <Grid.Col span={3}>
                         <Button
-                            onClick={handleSaveActivity}
+                            onClick={() => handleSaveActivity(idx)}
                             variant="light"
                             color="green"
                             size="xs"
+                            fullWidth
                         >
                             Save
                         </Button>
@@ -150,4 +128,4 @@ const AddActivityForm = ({
     );
 };
 
-export default AddActivityForm;
+export default ActivityForm;

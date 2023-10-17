@@ -10,9 +10,9 @@ import AuthenticationForm from './components/AuthenticationForm';
 import BrowsePage from './components/BrowsePage/BrowsePage';
 import CreateIdea from './components/CreateIdea/CreateIdea';
 import HeroPage from './components/HeroPage/HeroPage';
-import Map from './components/Map';
 import ErrorPage from './ErrorPage';
 import Layout from './Layout';
+
 const router = createBrowserRouter([
     {
         path: '/',
@@ -34,9 +34,11 @@ const router = createBrowserRouter([
                     {
                         path: 'create/:id',
                         element: (
-                            <Wrapper apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+                            <Wrapper
+                                apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
+                                libraries={['places']}
+                            >
                                 <CreateIdea />
-                                <Map />
                             </Wrapper>
                         ),
                     },
@@ -56,11 +58,7 @@ const router = createBrowserRouter([
             },
             {
                 path: '',
-                element: (
-                    <div>
-                        <HeroPage />
-                    </div>
-                ),
+                element: <HeroPage />,
             },
             {
                 path: 'placeholder',

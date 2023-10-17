@@ -1,5 +1,4 @@
-import { Box, Button, Paper, Text } from '@mantine/core';
-import { useEffect, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 const GMap = ({ mapRef }) => {
     return <div style={{ height: '100svh', width: '100%' }} ref={mapRef}></div>;
@@ -10,27 +9,28 @@ const GBTB_COORDINATES = {
     lng: 103.8636,
 };
 const GMAP_ZOOM = 15;
-const STOPS = [
-    {
-        location: 'Marina Barrage',
-        // lat: 1.2807,
-        // lng: 103.8711,
-    },
-    {
-        location: 'Satay by the Bay',
-        // lat: 1.2821,
-        // lng: 103.8689,
-    },
-    {
-        location: 'Gardens by the Bay',
-        // lat: 1.2816,
-        // lng: 103.8636,
-    },
-];
+// const STOPS = [
+//     {
+//         location: 'Marina Barrage',
+//         // lat: 1.2807,
+//         // lng: 103.8711,
+//     },
+//     {
+//         location: 'Satay by the Bay',
+//         // lat: 1.2821,
+//         // lng: 103.8689,
+//     },
+//     {
+//         location: 'Gardens by the Bay',
+//         // lat: 1.2816,
+//         // lng: 103.8636,
+//     },
+// ];
 
-const Map = () => {
+const Map = forwardRef(function Map({ activityList }, ref) {
     const mapRef = useRef();
     const [map, setMap] = useState(null);
+    const [markers, setMarkers] = useState([]);
     const [directionsService, setDirectionsService] = useState(null);
     const [directionsRenderer, setDirectionsRenderer] = useState(null);
 
@@ -47,12 +47,14 @@ const Map = () => {
         setDirectionsRenderer(newDirectionsRenderer);
     };
 
-    const calculateAndDisplayRoute = () => {
+    const calculateAndDisplayRoute = (activityList) => {
         directionsService
             .route({
-                origin: STOPS[0].location,
-                destination: STOPS[STOPS.length - 1].location,
-                waypoints: STOPS.slice(1, -1),
+                origin: activityList[0].location.latLng,
+                destination: activityList[activityList.length - 1].location.latLng,
+                waypoints: activityList
+                    .slice(1, -1)
+                    .map((activity) => ({ location: activity.location.latLng })),
                 optimizeWaypoints: true,
                 travelMode: window.google.maps.TravelMode.WALKING,
             })
@@ -63,26 +65,46 @@ const Map = () => {
             .catch((e) => window.alert('Directions request failed due to ' + e));
     };
 
+    useImperativeHandle(ref, () => ({
+        calculateAndDisplayRoute,
+    }));
+
     useEffect(() => {
         initMap();
     }, []);
 
+    useEffect(() => {
+        markers.forEach((marker) => marker.setMap(null));
+        setMarkers(
+            activityList.map((activity) => {
+                const marker = new window.google.maps.Marker({
+                    position: activity.location.latLng,
+                    map,
+                });
+                return marker;
+            }),
+        );
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [activityList]);
+
+    useEffect(() => {
+        console.log(markers);
+        markers.forEach((marker) => marker.setMap(map));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [markers]);
+
     return (
-        <Box pos={'relative'}>
-            <Paper
+        <>
+            {/* <Button
                 pos={'absolute'}
-                style={{ zIndex: 1 }}
-                m={'xs'}
-                p={'lg'}
-                h={'40%'}
-                w={'40%'}
+                style={{ zIndex: 2 }}
+                onClick={calculateAndDisplayRoute}
             >
-                <Text>THIS IS AN OVERLAY</Text>
-                <Button onClick={calculateAndDisplayRoute}>Get sample route</Button>
-            </Paper>
+                Get sample route
+            </Button> */}
             <GMap mapRef={mapRef} />
-        </Box>
+        </>
     );
-};
+});
 
 export default Map;

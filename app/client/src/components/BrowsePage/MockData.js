@@ -8,7 +8,6 @@ const MockData = [
         badges: [
             { emoji: '☀️', label: 'Sunny weather' },
             { emoji: '🦓', label: 'Onsite zoo' },
-            { emoji: '🦓', label: 'Onsite zoo' },
             { emoji: '🌊', label: 'Sea' },
             { emoji: '🌲', label: 'Nature' },
             { emoji: '🤽', label: 'Water sports' },
