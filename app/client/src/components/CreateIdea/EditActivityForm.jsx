@@ -6,12 +6,14 @@ import {
     NumberInput,
     Paper,
     SimpleGrid,
+    Text,
     Textarea,
     TextInput,
 } from '@mantine/core';
 import { TimeInput } from '@mantine/dates';
-import { IconEdit } from '@tabler/icons-react';
-
+import { AiFillEdit } from 'react-icons/ai';
+import { BiSolidTime } from 'react-icons/bi';
+import { IoLocationSharp } from 'react-icons/io5';
 
 const EditActivityForm = ({
     activity,
@@ -29,17 +31,43 @@ const EditActivityForm = ({
                     <Paper key={idx} shadow="md" radius="lg" p="xs">
                         <div key={idx}>
                             <Group justify="space-between">
-                                <div>
-                                    {activity.start} : {activity.end}{' '}
-                                </div>
-                                <div>{activity.location}</div>
+                                <Group>
+                                    <BiSolidTime color="pink" />
+                                    <Text
+                                        size="sm"
+                                        fw={900}
+                                        variant="gradient"
+                                        gradient={{
+                                            from: 'rgba(255, 161, 161, 1)',
+                                            to: 'rgba(255, 99, 133, 1)',
+                                            deg: 90,
+                                        }}
+                                    >
+                                        {activity.start} - {activity.end}{' '}
+                                    </Text>
+                                </Group>
+                                <Group>
+                                    <Text
+                                        size="sm"
+                                        fw={900}
+                                        variant="gradient"
+                                        gradient={{
+                                            from: 'rgba(255, 161, 161, 1)',
+                                            to: 'rgba(255, 99, 133, 1)',
+                                            deg: 90,
+                                        }}
+                                    >
+                                        {activity.name} @ {activity.location}
+                                    </Text>
+                                    <IoLocationSharp color="pink" />
+                                </Group>
                             </Group>
                         </div>
                     </Paper>
                 </Grid.Col>
                 <Grid.Col span={1}>
                     <div>
-                        <IconEdit onClick={() => handleEdit(idx)} color="grey" />
+                        <AiFillEdit onClick={() => handleEdit(idx)} color="grey" />
                     </div>
                 </Grid.Col>
             </Grid>
