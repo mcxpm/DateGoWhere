@@ -1,5 +1,6 @@
 import '@mantine/core/styles.css';
 
+import { Wrapper } from '@googlemaps/react-wrapper';
 import { createTheme, MantineProvider } from '@mantine/core';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -8,9 +9,9 @@ import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 import AuthenticationForm from './components/AuthenticationForm';
 import CreateIdea from './components/CreateIdea/CreateIdea';
 import HeroPage from './components/HeroPage/HeroPage';
+import Map from './components/Map';
 import ErrorPage from './ErrorPage';
 import Layout from './Layout';
-
 const router = createBrowserRouter([
     {
         path: '/',
@@ -31,7 +32,12 @@ const router = createBrowserRouter([
                     },
                     {
                         path: 'create/:id',
-                        element: <CreateIdea />,
+                        element: (
+                            <Wrapper apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+                                <CreateIdea />
+                                <Map />
+                            </Wrapper>
+                        ),
                     },
                     {
                         path: 'edit/:id',
