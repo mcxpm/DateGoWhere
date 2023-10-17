@@ -7,6 +7,7 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 
 import AuthenticationForm from './components/AuthenticationForm';
+import CreateIdea from './components/CreateIdea/CreateIdea';
 import HeroPage from './components/HeroPage/HeroPage';
 import Map from './components/Map';
 import ErrorPage from './ErrorPage';
@@ -33,6 +34,7 @@ const router = createBrowserRouter([
                         path: 'create/:id',
                         element: (
                             <Wrapper apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
+                                <CreateIdea />
                                 <Map />
                             </Wrapper>
                         ),
@@ -43,7 +45,7 @@ const router = createBrowserRouter([
                     },
                     {
                         path: 'browse',
-                        element: <div>browse</div>,
+                        element: <div>Browse </div>
                     },
                 ],
             },
@@ -55,8 +57,6 @@ const router = createBrowserRouter([
                 path: '',
                 element: (
                     <div>
-                        landing page - maybe a small hero section to explain what the app
-                        does
                         <HeroPage />
                     </div>
                 ),

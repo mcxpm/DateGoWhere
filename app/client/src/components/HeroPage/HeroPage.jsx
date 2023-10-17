@@ -1,41 +1,37 @@
-import { Button, Container, Group, Text } from '@mantine/core';
+import { Button, Container, Overlay, Text,Title } from '@mantine/core';
+import { Link } from 'react-router-dom';
 
 import classes from './HeroPage.module.css';
 
 export default function HeroPage() {
-    return (
-        <div className={classes.wrapper}>
-            <Container size={700} className={classes.inner}>
-                <h1 className={classes.title}>
-                    A{' '}
-                    <Text
-                        component="span"
-                        variant="gradient"
-                        gradient={{ from: 'blue', to: 'cyan' }}
-                        inherit
-                    >
-                        fully featured
-                    </Text>{' '}
-                    React components and hooks library
-                </h1>
 
-                <Text className={classes.description} color="dimmed">
-                    Build fully functional accessible web applications with ease – Mantine
-                    includes more than 100 customizable components and hooks to cover you
-                    in any situation
-                </Text>
+  return (
 
-                <Group className={classes.controls}>
-                    <Button
-                        size="xl"
-                        className={classes.control}
-                        variant="gradient"
-                        gradient={{ from: 'blue', to: 'cyan' }}
-                    >
-                        Get started
-                    </Button>
-                </Group>
-            </Container>
-        </div>
-    );
+    <div className={classes.hero}>
+      <Overlay
+        gradient="linear-gradient(90deg, rgba(255, 240, 246, 1) 30%, rgba(0, 0, 0, 0) 90%)"
+        opacity={1}
+        zIndex={0}
+      />
+      <Container className={classes.container} size="xl">
+        <Title className={classes.title} >DateGoWhere</Title>
+        <Text className={classes.description} mt="xl">
+          Date Ideas by Singaporeans for Singaporeans
+        </Text>
+
+        <Text className={classes.description2} mt="xl">
+          Upload your own date ideas to share with others, or choose from many date ideas. Your dates will never be boring ever again!
+        </Text>
+        <Link to= "/ideas/browse">
+          <Button 
+          color = "pink" 
+          size="xl"
+          radius="xl"
+          className={classes.control}>
+            Browse Ideas
+          </Button>
+        </Link>
+      </Container>
+    </div>
+  );
 }
