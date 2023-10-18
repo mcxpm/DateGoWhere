@@ -10,6 +10,7 @@ import AuthenticationForm from './components/AuthenticationForm';
 import BrowsePage from './components/BrowsePage/BrowsePage';
 import CreateIdea from './components/CreateIdea/CreateIdea';
 import HeroPage from './components/HeroPage/HeroPage';
+import ViewIdea from './components/ViewIdea/ViewIdea';
 import ErrorPage from './ErrorPage';
 import Layout from './Layout';
 
@@ -62,7 +63,7 @@ const router = createBrowserRouter([
             },
             {
                 path: 'placeholder',
-                element: <div>just a placeholder page</div>,
+                element: <ViewIdea />,
             },
         ],
     },
