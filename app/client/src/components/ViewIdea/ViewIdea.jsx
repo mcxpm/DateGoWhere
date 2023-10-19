@@ -99,7 +99,6 @@ const activities = MockActivity.map((activity) => (
             <Text size="xs" c={'dimmed'} fw={500}>
                 Estimated Damage : ${activity.budget}
             </Text>
-            <Box className={classes.card}></Box>
         </Accordion.Panel>
     </Accordion.Item>
 ));
