@@ -1,0 +1,14 @@
+.leftPanel {
+    display: grid;
+    justify-content: stretch;
+    align-content: space-between;
+}
+
+
+
+.title {
+    display: flex;
+    justify-content: space-between;
+    align-content: space-between;
+    padding-right: 2em;
+}
