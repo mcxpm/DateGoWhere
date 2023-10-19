@@ -9,9 +9,16 @@ import {
     Text,
     TextInput,
 } from '@mantine/core';
+import {
+    collection,
+    doc,
+    setDoc,
+    updateDoc,
+} from 'firebase/firestore';
 import { useRef, useState } from 'react';
 import { MdAdd, MdEdit, MdSave, MdUpload } from 'react-icons/md';
 
+import { db } from '../../config/firebase';
 import Map from '../Map';
 import ActivityForm from './ActivityForm';
 import classes from './CreateIdea.module.css';
@@ -37,6 +44,8 @@ const CreateIdea = () => {
     const [activityList, setActivityList] = useState([]);
 
     const [isEditingList, setIsEditingList] = useState([]);
+
+    const [docRef, setDocRef] = useState(null);
 
     const handleSaveActivity = (idx) => {
         const id = idx == -1 ? activityList.length - 1 : idx;
@@ -84,6 +93,46 @@ const CreateIdea = () => {
             }
             return newActivityList;
         });
+    };
+
+    const handleSubmit = async () => {
+        const newIdea = {
+            title: title,
+            activities: activityList,
+        };
+        try {
+            const docId = title + '_' + Date.now();
+            const docRef = doc(collection(db, 'ideas'), docId);
+            await setDoc(docRef, newIdea);
+            setDocRef(docRef);
+            console.log('Added idea w id: ', docRef.id);
+        } catch (e) {
+            console.error('Error adding document: ', e);
+        }
+    };
+
+
+    const testAddReview = async () => {
+
+        const docRef = doc(db, 'ideas', 'finaltest_1697688212402'); //replace the last one with the documentID
+
+        const dataToUpdate = {
+            review: {
+                createdAt: new Date(),
+                createdBy: 'createdBy user',
+                description: 'review description',
+                rating: 5,
+                title: 'review test',
+            },
+        };
+
+        // Call updateDoc to update the document with the new data
+        try {
+            await updateDoc(docRef, dataToUpdate);
+            console.log('Document successfully updated');
+        } catch (e) {
+            console.error('Error updating document: ', e);
+        }
     };
 
     return (
@@ -158,7 +207,8 @@ const CreateIdea = () => {
                         >
                             Get Route
                         </Button>
-                        <Button rightSection={<MdUpload />}>Submit</Button>
+                        <Button rightSection={<MdUpload />} onClick={handleSubmit}>Submit</Button>
+                        <Button onClick={testAddReview}>AddReview</Button>
                     </Group>
                 </Box>
             </Paper>
