@@ -1,4 +1,4 @@
-import { Paper, SimpleGrid } from '@mantine/core';
+import { Paper } from '@mantine/core';
 import { useLoaderData } from 'react-router-dom';
 
 import { getIdea } from '../../utils/IdeaUtils';
@@ -13,11 +13,9 @@ const TestViewIdea = () => {
     const ideaRef = useLoaderData();
 
     return (
-        <SimpleGrid h={'100dvh'} cols={{ base: 1, sm: 2 }} spacing={0}>
-            <Paper p={'md'} m={'xs'} withBorder shadow="xl" className={classes.leftPanel}>
-                {JSON.stringify(ideaRef.data())}
-            </Paper>
-        </SimpleGrid>
+        <Paper p={'md'} m={'xs'} withBorder shadow="xl" className={classes.leftPanel}>
+            {JSON.stringify(ideaRef.data())}
+        </Paper>
     );
 };
 

@@ -4,15 +4,15 @@ import {
     Divider,
     Group,
     Paper,
-    SimpleGrid,
     Stack,
     Text,
     TextInput,
 } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import { doc, updateDoc } from 'firebase/firestore';
 import { useRef, useState } from 'react';
 import { MdAdd, MdEdit, MdSave, MdUpload } from 'react-icons/md';
-import { redirect, useLoaderData, useNavigate } from 'react-router-dom';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 
 import { db } from '../../config/firebase';
 import { createIdea, updateIdea } from '../../utils/IdeaUtils';
@@ -100,6 +100,22 @@ const CreateIdea = () => {
 
     const handleSubmit = async () => {
         console.log('submit', newIdeaRef.id);
+        if (activityList.length == 0) {
+            return notifications.show({
+                color: 'red',
+                title: 'Error',
+                message: 'Dates must have at least one activity',
+                autoClose: 2000,
+            });
+        }
+        if (title == '') {
+            return notifications.show({
+                color: 'red',
+                title: 'Error',
+                message: 'Dates must have a name',
+                autoClose: 2000,
+            });
+        }
         try {
             updateIdea(newIdeaRef, {
                 title: title,
@@ -138,7 +154,7 @@ const CreateIdea = () => {
     };
 
     return (
-        <SimpleGrid h={'100dvh'} cols={{ base: 1, sm: 2 }} spacing={0}>
+        <>
             {/* <Form method="post" action="/ideas/create"> */}
             <Paper p={'md'} m={'xs'} withBorder shadow="xl" className={classes.leftPanel}>
                 <Stack gap={'sm'}>
@@ -219,7 +235,7 @@ const CreateIdea = () => {
             </Paper>
             {/* </Form> */}
             <Map activityList={activityList} ref={ref} />
-        </SimpleGrid>
+        </>
     );
 };
 

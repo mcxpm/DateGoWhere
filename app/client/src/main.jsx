@@ -1,7 +1,8 @@
 import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 
-import { Wrapper } from '@googlemaps/react-wrapper';
 import { createTheme, MantineProvider } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
@@ -12,6 +13,7 @@ import CreateIdea, {
     loader as createIdeaLoader,
 } from './components/CreateIdea/CreateIdea';
 import HeroPage from './components/HeroPage/HeroPage';
+import TwoPanelLayout from './components/TwoPanelLayout';
 import TestViewIdea, {
     loader as testViewIdeaLoader,
 } from './components/ViewIdea/TestViewIdea';
@@ -33,29 +35,28 @@ const router = createBrowserRouter([
                 element: <Outlet />,
                 children: [
                     {
-                        loader: createIdeaLoader,
-                        path: 'create',
-                        element: (
-                            <Wrapper
-                                apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
-                                libraries={['places']}
-                            >
-                                <CreateIdea />
-                            </Wrapper>
-                        ),
+                        path: '',
+                        element: <TwoPanelLayout />,
+                        children: [
+                            {
+                                loader: createIdeaLoader,
+                                path: 'create',
+                                element: <CreateIdea />,
+                            },
+                            {
+                                loader: testViewIdeaLoader,
+                                path: 'view/:id',
+                                element: <TestViewIdea />,
+                            },
+                            {
+                                path: 'edit/:id',
+                                element: <div>edit</div>,
+                            },
+                        ],
                     },
                     {
                         path: 'browse',
                         element: <BrowsePage />,
-                    },
-                    {
-                        loader: testViewIdeaLoader,
-                        path: 'view/:id',
-                        element: <TestViewIdea />,
-                    },
-                    {
-                        path: 'edit/:id',
-                        element: <div>edit</div>,
                     },
                 ],
             },
@@ -83,6 +84,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <MantineProvider withGlobalStyles withNormalizeCSS theme={theme}>
             <RouterProvider router={router} />
+            <Notifications />
         </MantineProvider>
     </React.StrictMode>,
 );
