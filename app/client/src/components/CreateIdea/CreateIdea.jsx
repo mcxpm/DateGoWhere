@@ -9,21 +9,26 @@ import {
     Text,
     TextInput,
 } from '@mantine/core';
-import {
-    collection,
-    doc,
-    setDoc,
-    updateDoc,
-} from 'firebase/firestore';
+import { doc, updateDoc } from 'firebase/firestore';
 import { useRef, useState } from 'react';
 import { MdAdd, MdEdit, MdSave, MdUpload } from 'react-icons/md';
+import { redirect, useLoaderData, useNavigate } from 'react-router-dom';
 
 import { db } from '../../config/firebase';
+import { createIdea, updateIdea } from '../../utils/IdeaUtils';
 import Map from '../Map';
 import ActivityForm from './ActivityForm';
 import classes from './CreateIdea.module.css';
 
+export async function loader() {
+    console.log('create');
+    return await createIdea();
+}
+
 const CreateIdea = () => {
+    const newIdeaRef = useLoaderData();
+    const navigate = useNavigate();
+
     const ref = useRef(null);
 
     const emptyActivity = {
@@ -44,8 +49,6 @@ const CreateIdea = () => {
     const [activityList, setActivityList] = useState([]);
 
     const [isEditingList, setIsEditingList] = useState([]);
-
-    const [docRef, setDocRef] = useState(null);
 
     const handleSaveActivity = (idx) => {
         const id = idx == -1 ? activityList.length - 1 : idx;
@@ -96,24 +99,23 @@ const CreateIdea = () => {
     };
 
     const handleSubmit = async () => {
-        const newIdea = {
-            title: title,
-            activities: activityList,
-        };
+        console.log('submit', newIdeaRef.id);
         try {
-            const docId = title + '_' + Date.now();
-            const docRef = doc(collection(db, 'ideas'), docId);
-            await setDoc(docRef, newIdea);
-            setDocRef(docRef);
-            console.log('Added idea w id: ', docRef.id);
+            updateIdea(newIdeaRef, {
+                title: title,
+                activities: activityList.map((obj) => {
+                    return Object.assign({}, obj);
+                }),
+            }).then(() => {
+                console.log('hadsads');
+                navigate('/ideas/view/' + newIdeaRef.id, { replace: true });
+            });
         } catch (e) {
-            console.error('Error adding document: ', e);
+            console.log('Error creating idea: ', e);
         }
     };
 
-
     const testAddReview = async () => {
-
         const docRef = doc(db, 'ideas', 'finaltest_1697688212402'); //replace the last one with the documentID
 
         const dataToUpdate = {
@@ -137,6 +139,7 @@ const CreateIdea = () => {
 
     return (
         <SimpleGrid h={'100dvh'} cols={{ base: 1, sm: 2 }} spacing={0}>
+            {/* <Form method="post" action="/ideas/create"> */}
             <Paper p={'md'} m={'xs'} withBorder shadow="xl" className={classes.leftPanel}>
                 <Stack gap={'sm'}>
                     <TextInput
@@ -207,11 +210,14 @@ const CreateIdea = () => {
                         >
                             Get Route
                         </Button>
-                        <Button rightSection={<MdUpload />} onClick={handleSubmit}>Submit</Button>
+                        <Button rightSection={<MdUpload />} onClick={handleSubmit}>
+                            Submit
+                        </Button>
                         <Button onClick={testAddReview}>AddReview</Button>
                     </Group>
                 </Box>
             </Paper>
+            {/* </Form> */}
             <Map activityList={activityList} ref={ref} />
         </SimpleGrid>
     );

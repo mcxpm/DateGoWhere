@@ -8,8 +8,13 @@ import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 
 import AuthenticationForm from './components/AuthenticationForm';
 import BrowsePage from './components/BrowsePage/BrowsePage';
-import CreateIdea from './components/CreateIdea/CreateIdea';
+import CreateIdea, {
+    loader as createIdeaLoader,
+} from './components/CreateIdea/CreateIdea';
 import HeroPage from './components/HeroPage/HeroPage';
+import TestViewIdea, {
+    loader as testViewIdeaLoader,
+} from './components/ViewIdea/TestViewIdea';
 import ErrorPage from './ErrorPage';
 import Layout from './Layout';
 
@@ -28,11 +33,8 @@ const router = createBrowserRouter([
                 element: <Outlet />,
                 children: [
                     {
-                        path: 'view/:id',
-                        element: <div>view</div>,
-                    },
-                    {
-                        path: 'create/:id',
+                        loader: createIdeaLoader,
+                        path: 'create',
                         element: (
                             <Wrapper
                                 apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
@@ -43,12 +45,17 @@ const router = createBrowserRouter([
                         ),
                     },
                     {
-                        path: 'edit/:id',
-                        element: <div>edit</div>,
-                    },
-                    {
                         path: 'browse',
                         element: <BrowsePage />,
+                    },
+                    {
+                        loader: testViewIdeaLoader,
+                        path: 'view/:id',
+                        element: <TestViewIdea />,
+                    },
+                    {
+                        path: 'edit/:id',
+                        element: <div>edit</div>,
                     },
                 ],
             },
