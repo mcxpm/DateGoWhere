@@ -1,0 +1,10 @@
+.leftPanel {
+    display: grid;
+    justify-content: stretch;
+    align-content: space-between;
+}
+
+.card {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 1fr);
+}
