@@ -3,7 +3,12 @@ import { useDebouncedValue } from '@mantine/hooks';
 import { useEffect, useRef, useState } from 'react';
 import { MdLocationPin } from 'react-icons/md';
 
-export default function LocationAutocomplete({ value, handleChangeActivity, idx }) {
+export default function LocationAutocomplete({
+    value,
+    handleChangeActivity,
+    idx,
+    inputProps,
+}) {
     const placesRef = useRef();
     const [data, setData] = useState([]);
     const [autocompleteService, setAutocompleteService] = useState(null);
@@ -83,6 +88,7 @@ export default function LocationAutocomplete({ value, handleChangeActivity, idx 
                     }
                     handleChangeActivity('location', idx, { description: newValue });
                 }}
+                {...inputProps}
             />
         </>
     );

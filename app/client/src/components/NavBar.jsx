@@ -18,7 +18,7 @@ import { UserTab } from './UserTab';
 const data = [
     { link: '/', label: 'Home', icon: MdHome },
     { link: '/ideas/browse', label: 'Browse Ideas', icon: MdViewModule },
-    { link: '/ideas/create/1', label: 'Create New Idea', icon: MdPostAdd },
+    { link: '/ideas/create', label: 'Create New Idea', icon: MdPostAdd },
     { link: '/placeholder', label: 'Your Ideas', icon: MdPersonSearch },
 ];
 

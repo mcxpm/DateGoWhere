@@ -4,19 +4,31 @@ import {
     Divider,
     Group,
     Paper,
-    SimpleGrid,
     Stack,
     Text,
     TextInput,
 } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
+import { doc, updateDoc } from 'firebase/firestore';
 import { useRef, useState } from 'react';
 import { MdAdd, MdEdit, MdSave, MdUpload } from 'react-icons/md';
+import { useLoaderData, useNavigate } from 'react-router-dom';
 
+import { db } from '../../config/firebase';
+import { createIdea, updateIdea } from '../../utils/IdeaUtils';
 import Map from '../Map';
 import ActivityForm from './ActivityForm';
 import classes from './CreateIdea.module.css';
 
+export async function loader() {
+    console.log('create');
+    return await createIdea();
+}
+
 const CreateIdea = () => {
+    const newIdeaRef = useLoaderData();
+    const navigate = useNavigate();
+
     const ref = useRef(null);
 
     const emptyActivity = {
@@ -86,8 +98,64 @@ const CreateIdea = () => {
         });
     };
 
+    const handleSubmit = async () => {
+        console.log('submit', newIdeaRef.id);
+        if (activityList.length == 0) {
+            return notifications.show({
+                color: 'red',
+                title: 'Error',
+                message: 'Dates must have at least one activity',
+                autoClose: 2000,
+            });
+        }
+        if (title == '') {
+            return notifications.show({
+                color: 'red',
+                title: 'Error',
+                message: 'Dates must have a name',
+                autoClose: 2000,
+            });
+        }
+        try {
+            updateIdea(newIdeaRef, {
+                title: title,
+                activities: activityList.map((obj) => {
+                    return Object.assign({}, obj);
+                }),
+            }).then(() => {
+                console.log('hadsads');
+                navigate('/ideas/view/' + newIdeaRef.id, { replace: true });
+            });
+        } catch (e) {
+            console.log('Error creating idea: ', e);
+        }
+    };
+
+    const testAddReview = async () => {
+        const docRef = doc(db, 'ideas', 'finaltest_1697688212402'); //replace the last one with the documentID
+
+        const dataToUpdate = {
+            review: {
+                createdAt: new Date(),
+                createdBy: 'createdBy user',
+                description: 'review description',
+                rating: 5,
+                title: 'review test',
+            },
+        };
+
+        // Call updateDoc to update the document with the new data
+        try {
+            await updateDoc(docRef, dataToUpdate);
+            console.log('Document successfully updated');
+        } catch (e) {
+            console.error('Error updating document: ', e);
+        }
+    };
+
     return (
-        <SimpleGrid h={'100dvh'} cols={{ base: 1, sm: 2 }} spacing={0}>
+        <>
+            {/* <Form method="post" action="/ideas/create"> */}
             <Paper p={'md'} m={'xs'} withBorder shadow="xl" className={classes.leftPanel}>
                 <Stack gap={'sm'}>
                     <TextInput
@@ -158,12 +226,16 @@ const CreateIdea = () => {
                         >
                             Get Route
                         </Button>
-                        <Button rightSection={<MdUpload />}>Submit</Button>
+                        <Button rightSection={<MdUpload />} onClick={handleSubmit}>
+                            Submit
+                        </Button>
+                        <Button onClick={testAddReview}>AddReview</Button>
                     </Group>
                 </Box>
             </Paper>
+            {/* </Form> */}
             <Map activityList={activityList} ref={ref} />
-        </SimpleGrid>
+        </>
     );
 };
 
