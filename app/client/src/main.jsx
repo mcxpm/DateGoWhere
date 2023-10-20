@@ -17,6 +17,7 @@ import TwoPanelLayout from './components/TwoPanelLayout';
 import TestViewIdea, {
     loader as testViewIdeaLoader,
 } from './components/ViewIdea/TestViewIdea';
+import ViewIdea from './components/ViewIdea/ViewIdea';
 import ErrorPage from './ErrorPage';
 import Layout from './Layout';
 
@@ -70,7 +71,7 @@ const router = createBrowserRouter([
             },
             {
                 path: 'placeholder',
-                element: <div>just a placeholder page</div>,
+                element: <ViewIdea />,
             },
         ],
     },
