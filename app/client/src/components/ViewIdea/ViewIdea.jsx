@@ -1,17 +1,21 @@
 import {
     Accordion,
-    Badge,
     Box,
     Button,
     Divider,
-    Group,
+    Modal,
     Paper,
+    ScrollArea,
     SimpleGrid,
     Stack,
     Text,
 } from '@mantine/core';
-import { MdAccessTime, MdAttachMoney, MdGrade, MdReviews } from 'react-icons/md';
+import { useDisclosure } from '@mantine/hooks';
+import { useState } from 'react';
 
+import CreateReview from './CreateReview';
+import Overview from './Overview';
+import ReviewCard from './ReviewCard';
 import classes from './ViewIdea.module.css';
 
 //used mockdata temporarily
@@ -48,6 +52,30 @@ const MockActivity = [
         budget: '0',
     },
 ];
+
+const MockReviews = [
+    {
+        name: 'Tan Shao Chong',
+        rating: '5',
+        avatar: 'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
+        review: 'Quis occaecat enim cillum labore consequat reprehenderit eu nostrud deserunt ut occaecat. Sint amet nostrud aliquip commodo. Aute eu elit elit reprehenderit. Sit voluptate id sint cillum amet sit irure exercitation enim et. Ut veniam pariatur dolor non et ipsum qui mollit nulla ut cupidatat dolore. Ea sint eu reprehenderit nisi magna anim officia dolore adipisicing sunt non. Aliqua minim mollit minim voluptate laboris id dolor dolor est aliqua commodo ad ipsum dolore.',
+    },
+
+    {
+        name: 'Asher Tam',
+        rating: '4',
+        avatar: 'https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&q=80&w=1780&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        review: 'Quis occaecat enim cillum labore consequat reprehenderit eu nostrud deserunt ut occaecat. Sint amet nostrud aliquip commodo. Aute eu elit elit reprehenderit. Sit voluptate id sint cillum amet sit irure exercitation enim et. Ut veniam pariatur dolor non et ipsum qui mollit nulla ut cupidatat dolore. Ea sint eu reprehenderit nisi magna anim officia dolore adipisicing sunt non. Aliqua minim mollit minim voluptate laboris id dolor dolor est aliqua commodo ad ipsum dolore.',
+    },
+
+    {
+        name: 'Markus Lim',
+        rating: '5',
+        avatar: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?auto=format&fit=crop&q=80&w=1780&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+        review: 'Quis occaecat enim cillum labore consequat reprehenderit eu nostrud deserunt ut occaecat. Sint amet nostrud aliquip commodo. Aute eu elit elit reprehenderit. Sit voluptate id sint cillum amet sit irure exercitation enim et. Ut veniam pariatur dolor non et ipsum qui mollit nulla ut cupidatat dolore. Ea sint eu reprehenderit nisi magna anim officia dolore adipisicing sunt non. Aliqua minim mollit minim voluptate laboris id dolor dolor est aliqua commodo ad ipsum dolore.',
+    },
+];
+
 // Overall Date data to be imported from database (title, rating, etc)
 
 let overallBudget = 0;
@@ -104,47 +132,39 @@ const activities = MockActivity.map((activity) => (
 ));
 
 const ViewIdea = () => {
+    const [opened, { open, close }] = useDisclosure(false);
+    const [isAddingReview, setIsAddingReview] = useState(false);
+
+    const handleAddActivity =()=>{
+        setIsAddingReview(!isAddingReview);
+    }
+
+    let actionButton;
+    if (!isAddingReview) {
+        actionButton = (
+            <Button onClick={handleAddActivity}> Add review </Button>
+        );
+    } else {
+        actionButton = <Button onClick={handleAddActivity}> Return </Button>;
+    }
+
+    let reviewPortion;
+    if (!isAddingReview) {
+        reviewPortion = <ReviewCard reviewData = {MockReviews} />;
+    } else {
+        reviewPortion = <CreateReview handleAddActivity = {handleAddActivity}/>;
+    }
+    console.log(isAddingReview)
     return (
         <SimpleGrid h={'100dvh'} cols={{ base: 1, sm: 2 }} spacing={0}>
             <Paper p={'md'} m={'xs'} withBorder shadow="xl" className={classes.leftPanel}>
                 <Stack gap={'sm'}>
-                    <Box className={classes.title}>
-                        <Text fw={700} c="pink">
-                            Romantic night at Gardens By the Bay
-                        </Text>
-                    </Box>
-                    <Group>
-                        <Box>
-                            <Badge
-                                variant="outline"
-                                size="md"
-                                fw={700}
-                                leftSection={<MdAttachMoney />}
-                            >
-                                Budget: ${overallBudget}
-                            </Badge>
-                        </Box>
-
-                        <Box>
-                            <Badge
-                                variant="outline"
-                                size="md"
-                                fw={700}
-                                leftSection={<MdAccessTime />}
-                            >
-                                Duration: {formatTime(overallHours, overallMinutes)}
-                            </Badge>
-                            <Text size="sm" c={'dimmed'} fw={500}></Text>
-                        </Box>
-                        <Badge
-                            variant="outline"
-                            size="md"
-                            fw={700}
-                            rightSection={<MdGrade color="gold" />}
-                        >
-                            5
-                        </Badge>
-                    </Group>
+                    <Overview
+                        overallBudget={overallBudget}
+                        formatTime={formatTime}
+                        overallHours={overallHours}
+                        overallMinutes={overallMinutes}
+                    />
                     <Divider />
 
                     <Accordion multiple variant="contained">
@@ -154,11 +174,35 @@ const ViewIdea = () => {
 
                 <Box>
                     <Divider my={'sm'} />
-                    <Group justify="center">
-                        <Button fullWidth variant="outline" rightSection={<MdReviews />}>
-                            Add Review
+
+                    <>
+                        <Modal
+                            // size="xl"
+                            opened={opened}
+                            onClose={close}
+                            title={
+                                <Stack>
+                                    <Overview
+                                        overallBudget={overallBudget}
+                                        formatTime={formatTime}
+                                        overallHours={overallHours}
+                                        overallMinutes={overallMinutes}
+                                    />
+
+                                    {actionButton}
+                                    <Divider />
+                                </Stack>
+                            }
+                            scrollAreaComponent={ScrollArea.Autosize}
+                        >
+                            {reviewPortion}
+                        </Modal>
+
+                        <Button onClick={open} fullWidth variant="outline">
+                            {' '}
+                            View Reviews
                         </Button>
-                    </Group>
+                    </>
                 </Box>
             </Paper>
         </SimpleGrid>
