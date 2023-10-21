@@ -13,27 +13,9 @@ import { isNotEmpty, useForm } from '@mantine/form';
 
 import LocationAutocomplete from '../LocationAutocomplete';
 
-const ActivityForm = ({
-    idx,
-    activity,
-    handleChangeActivity,
-    handleDiscardActivity,
-    handleSaveActivity,
-}) => {
+const ActivityForm = ({ idx, activity, handleDiscardActivity, handleSaveActivity }) => {
     const form = useForm({
-        initialValues: {
-            start: '',
-            end: '',
-            name: '',
-            location: {
-                name: '',
-                description: '',
-                latLng: null,
-            },
-            description: '',
-            budget: '',
-            tags: [],
-        },
+        initialValues: activity,
         validate: {
             start: (value) => (value ? null : 'Activity must have a start time'),
             end: (value) => (value ? null : 'Activity must have an end time'),
@@ -56,17 +38,19 @@ const ActivityForm = ({
     });
 
     return (
-        <form onSubmit={form.onSubmit((values) => console.log(values))}>
-            <Paper shadow="none" p="sm">
+        <form
+            onSubmit={form.onSubmit((values) => {
+                if (form.isValid) {
+                    handleSaveActivity(idx, values);
+                }
+            })}
+        >
+            <Paper shadow="none" p="sm" withBorder>
                 <SimpleGrid cols={{ base: 1, sm: 3 }}>
                     <TimeInput
                         size="xs"
                         variant="filled"
                         label="Start Time"
-                        value={activity.start}
-                        onChange={(e) =>
-                            handleChangeActivity('start', idx, e.target.value)
-                        }
                         placeholder="Time"
                         required
                         {...form.getInputProps('start')}
@@ -75,8 +59,6 @@ const ActivityForm = ({
                         size="xs"
                         variant="filled"
                         label="End Time"
-                        value={activity.end}
-                        onChange={(e) => handleChangeActivity('end', idx, e.target.value)}
                         placeholder="Time"
                         required
                         {...form.getInputProps('end')}
@@ -86,30 +68,17 @@ const ActivityForm = ({
                         size="xs"
                         label="Activity Name"
                         placeholder="Activity"
-                        value={activity.name}
-                        onChange={(e) =>
-                            handleChangeActivity('name', idx, e.target.value)
-                        }
                         required
                         {...form.getInputProps('name')}
                     />
                 </SimpleGrid>
-                <LocationAutocomplete
-                    value={activity.location.description}
-                    handleChangeActivity={handleChangeActivity}
-                    idx={idx}
-                    inputProps={form.getInputProps('location.description')}
-                />
+                <LocationAutocomplete form={form} />
                 <Textarea
                     label="Description"
                     variant="filled"
                     size="xs"
                     radius="xs"
                     placeholder="Description"
-                    value={activity.description}
-                    onChange={(e) =>
-                        handleChangeActivity('description', idx, e.target.value)
-                    }
                     autosize
                     maxRows={3}
                     required
@@ -123,8 +92,6 @@ const ActivityForm = ({
                     data={['Romantic', 'Outdoor', 'Food', 'Sport', 'Dance', 'Cultural']}
                     searchable
                     nothingFoundMessage="Nothing found..."
-                    value={activity.tags}
-                    onChange={(value) => handleChangeActivity('tags', idx, value)}
                     {...form.getInputProps('tags')}
                 />
 
@@ -136,10 +103,6 @@ const ActivityForm = ({
                             label="Budget"
                             placeholder="Cost"
                             min={0}
-                            value={activity.budget}
-                            onChange={(value) =>
-                                handleChangeActivity('budget', idx, value)
-                            }
                             prefix="$"
                             required
                             {...form.getInputProps('budget')}
@@ -160,9 +123,6 @@ const ActivityForm = ({
                         <Button
                             onClick={() => {
                                 form.validate();
-                                if (form.isValid) {
-                                    handleSaveActivity(idx);
-                                }
                             }}
                             variant="light"
                             color="green"

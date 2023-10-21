@@ -50,8 +50,14 @@ const CreateIdea = () => {
 
     const [isEditingList, setIsEditingList] = useState([]);
 
-    const handleSaveActivity = (idx) => {
+    const handleSaveActivity = (idx, values) => {
+        console.log('adding activity: ', values);
         const id = idx == -1 ? activityList.length - 1 : idx;
+        setActivityList((prev) => {
+            const newActivityList = [...prev];
+            newActivityList[id] = values;
+            return newActivityList;
+        });
         setIsEditingList((prev) => {
             const newIsEditingList = [...prev];
             newIsEditingList[id] = false;
@@ -63,7 +69,7 @@ const CreateIdea = () => {
         const id = idx == -1 ? activityList.length - 1 : idx;
         setActivityList((prev) => {
             const newActivityList = [...prev];
-            newActivityList.splice(id);
+            newActivityList.splice(id, 1);
             return newActivityList;
         });
     };
@@ -82,21 +88,21 @@ const CreateIdea = () => {
         });
     };
 
-    const handleChangeActivity = (key, idx, value) => {
-        const id = idx == -1 ? activityList.length - 1 : idx;
-        setActivityList((prev) => {
-            const newActivityList = [...prev];
-            if (key == 'location') {
-                newActivityList[id][key] = {
-                    ...newActivityList[id][key],
-                    ...value,
-                };
-            } else {
-                newActivityList[id][key] = value;
-            }
-            return newActivityList;
-        });
-    };
+    // const handleChangeActivity = (key, idx, value) => {
+    //     const id = idx == -1 ? activityList.length - 1 : idx;
+    //     setActivityList((prev) => {
+    //         const newActivityList = [...prev];
+    //         if (key == 'location') {
+    //             newActivityList[id][key] = {
+    //                 ...newActivityList[id][key],
+    //                 ...value,
+    //             };
+    //         } else {
+    //             newActivityList[id][key] = value;
+    //         }
+    //         return newActivityList;
+    //     });
+    // };
 
     const handleSubmit = async () => {
         console.log('submit', newIdeaRef.id);
@@ -168,7 +174,7 @@ const CreateIdea = () => {
                     <Divider />
                     {activityList.map((activity, idx) => {
                         return !isEditingList[idx] ? (
-                            <Paper key={idx} p="xs" shadow="none">
+                            <Paper key={idx} p="xs" shadow="none" withBorder>
                                 <Box className={classes.card}>
                                     <Box>
                                         <Text size="xs" c={'dimmed'} fw={500}>
@@ -196,7 +202,6 @@ const CreateIdea = () => {
                                 key={idx}
                                 activity={activity}
                                 idx={idx}
-                                handleChangeActivity={handleChangeActivity}
                                 handleDiscardActivity={handleDiscardActivity}
                                 handleSaveActivity={handleSaveActivity}
                             />
@@ -219,7 +224,7 @@ const CreateIdea = () => {
                         </Button>
                         <Button
                             variant="outline"
-                            color="green"
+                            color="gray"
                             onClick={() =>
                                 ref?.current?.calculateAndDisplayRoute(activityList)
                             }

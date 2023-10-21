@@ -3,17 +3,15 @@ import { useDebouncedValue } from '@mantine/hooks';
 import { useEffect, useRef, useState } from 'react';
 import { MdLocationPin } from 'react-icons/md';
 
-export default function LocationAutocomplete({
-    value,
-    handleChangeActivity,
-    idx,
-    inputProps,
-}) {
+export default function LocationAutocomplete({ form }) {
     const placesRef = useRef();
     const [data, setData] = useState([]);
     const [autocompleteService, setAutocompleteService] = useState(null);
     const [placesService, setPlacesService] = useState(null);
-    const [debouncedInputValue] = useDebouncedValue(value, 400);
+    const [debouncedInputValue] = useDebouncedValue(
+        form.values.location.description,
+        400,
+    );
 
     const initAutocomplete = () => {
         const newAutocompleteService =
@@ -31,9 +29,10 @@ export default function LocationAutocomplete({
     const getPlaceDetails = (place_id) => {
         placesService.getDetails({ placeId: place_id }, (result) => {
             console.log('google.maps.places.getDetails', result);
-            handleChangeActivity('location', idx, {
-                name: result.name,
-                latLng: result.geometry.location,
+            form.setFieldValue('location.name', result.name);
+            form.setFieldValue('location.latLng', {
+                lat: result.geometry.location.lat(),
+                lng: result.geometry.location.lng(),
             });
         });
     };
@@ -41,7 +40,6 @@ export default function LocationAutocomplete({
     useEffect(() => {
         initAutocomplete();
         initPlaces();
-        console.log(window.google.maps.places);
     }, []);
 
     useEffect(() => {
@@ -74,21 +72,22 @@ export default function LocationAutocomplete({
         <>
             <div className="" ref={placesRef}></div>
             <Autocomplete
+                {...form.getInputProps('location.description')}
                 label="Location"
                 required
                 variant="filled"
                 leftSection={<MdLocationPin />}
                 size="xs"
                 data={data.map((place) => place.description)}
-                value={value}
+                // override mantine form input props
                 onChange={(newValue) => {
+                    form.setFieldValue('location.description', newValue);
                     const place = data.find((place) => place.description == newValue);
                     if (place) {
                         getPlaceDetails(place.place_id);
                     }
-                    handleChangeActivity('location', idx, { description: newValue });
                 }}
-                {...inputProps}
+                name="location.description"
             />
         </>
     );

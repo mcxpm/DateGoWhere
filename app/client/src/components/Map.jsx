@@ -88,7 +88,7 @@ const Map = forwardRef(function Map({ activityList }, ref) {
     }, [activityList]);
 
     useEffect(() => {
-        console.log(markers);
+        // console.log(markers);
         markers.forEach((marker) => marker.setMap(map));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [markers]);
