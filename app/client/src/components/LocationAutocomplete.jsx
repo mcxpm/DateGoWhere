@@ -34,6 +34,7 @@ export default function LocationAutocomplete({ form }) {
                 lat: result.geometry.location.lat(),
                 lng: result.geometry.location.lng(),
             });
+            form.setFieldValue('location.image', result.photos[0].getUrl());
         });
     };
 

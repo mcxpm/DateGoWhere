@@ -3,17 +3,17 @@ import { AiOutlineHeart } from 'react-icons/ai';
 
 import classes from './BrowsePage.module.css';
 const Idea = ({ idea }) => {
-    const features = idea.badges.map((badge) => (
-        <Badge variant="light" key={badge.label + idea.title} leftSection={badge.emoji}>
-            {badge.label}
-        </Badge>
-    ));
+    // const features = idea.badges.map((badge) => (
+    //     <Badge variant="light" key={badge.label + idea.title} leftSection={badge.emoji}>
+    //         {badge.label}
+    //     </Badge>
+    // ));
 
     return (
         <article>
             <Card withBorder radius="md" p="md" className={classes.card}>
                 <Card.Section>
-                    <Image src={idea.image} alt={idea.title} height={180} />
+                    <Image src={idea.activities[0].location.image} alt={idea.title} height={180} />
                 </Card.Section>
 
                 <Card.Section className={classes.section} mt="md">
@@ -21,12 +21,12 @@ const Idea = ({ idea }) => {
                         <Text fz="lg" fw={500}>
                             {idea.title}
                         </Text>
-                        <Badge size="sm" variant="light">
+                        {/* <Badge size="sm" variant="light">
                             {idea.country}
-                        </Badge>
+                        </Badge> */}
                     </Group>
                     <Text fz="sm" mt="xs">
-                        {idea.description}
+                        {idea.activities[0].description}
                     </Text>
                 </Card.Section>
 
@@ -34,9 +34,9 @@ const Idea = ({ idea }) => {
                     <Text mt="md" className={classes.label} c="dimmed">
                         Perfect for you, if you enjoy
                     </Text>
-                    <Group gap={7} mt={5}>
+                    {/* <Group gap={7} mt={5}>
                         {features}
-                    </Group>
+                    </Group> */}
                 </Card.Section>
 
                 <Group mt="xs">
