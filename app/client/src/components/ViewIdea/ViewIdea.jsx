@@ -19,6 +19,7 @@ import Overview from './Overview';
 import ReviewCard from './ReviewCard';
 import classes from './ViewIdea.module.css';
 
+// eslint-disable-next-line react-refresh/only-export-components
 export async function loader({ params }) {
     return await getIdea(params.id);
 }

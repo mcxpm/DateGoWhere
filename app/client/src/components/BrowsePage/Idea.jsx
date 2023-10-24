@@ -1,5 +1,6 @@
 import { ActionIcon, Badge, Button, Card, Group, Image, Text } from '@mantine/core';
 import { AiOutlineHeart } from 'react-icons/ai';
+import { useNavigate } from 'react-router-dom';
 
 import classes from './BrowsePage.module.css';
 const Idea = ({ idea }) => {
@@ -8,6 +9,8 @@ const Idea = ({ idea }) => {
     //         {badge.label}
     //     </Badge>
     // ));
+
+    const navigate = useNavigate();
 
     return (
         <article>
@@ -45,7 +48,13 @@ const Idea = ({ idea }) => {
                     </Card.Section>
 
                     <Group mt="xs">
-                        <Button radius="md" style={{ flex: 1 }}>
+                        <Button
+                            radius="md"
+                            style={{ flex: 1 }}
+                            onClick={() => {
+                                navigate(`/ideas/view/${idea.id}`);
+                            }}
+                        >
                             Show details
                         </Button>
                         <ActionIcon variant="default" radius="md" size={36}>
