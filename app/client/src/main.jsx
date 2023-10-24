@@ -14,10 +14,7 @@ import CreateIdea, {
 } from './components/CreateIdea/CreateIdea';
 import HeroPage from './components/HeroPage/HeroPage';
 import TwoPanelLayout from './components/TwoPanelLayout';
-import TestViewIdea, {
-    loader as testViewIdeaLoader,
-} from './components/ViewIdea/TestViewIdea';
-import ViewIdea from './components/ViewIdea/ViewIdea';
+import ViewIdea, { loader as viewIdeaLoader } from './components/ViewIdea/ViewIdea';
 import ErrorPage from './ErrorPage';
 import Layout from './Layout';
 
@@ -45,9 +42,9 @@ const router = createBrowserRouter([
                                 element: <CreateIdea />,
                             },
                             {
-                                loader: testViewIdeaLoader,
+                                loader: viewIdeaLoader,
                                 path: 'view/:id',
-                                element: <TestViewIdea />,
+                                element: <ViewIdea />,
                             },
                             {
                                 path: 'edit/:id',
@@ -66,12 +63,12 @@ const router = createBrowserRouter([
                 element: <div>users</div>,
             },
             {
-                path: '',
+                index: true,
                 element: <HeroPage />,
             },
             {
                 path: 'placeholder',
-                element: <ViewIdea />,
+                element: <div>your ideas</div>,
             },
         ],
     },

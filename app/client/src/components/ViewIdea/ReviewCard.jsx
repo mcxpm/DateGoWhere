@@ -1,19 +1,16 @@
 import { Avatar, Badge, Group, Paper, Text } from '@mantine/core';
 import { MdGrade } from 'react-icons/md';
 
-
-const ReviewCard = ({reviewData}) => {
-    return reviewData.map((item) => (
-        <Paper key={item.name} p={'md'} m={'xs'} withBorder shadow="xl">
+const ReviewCard = ({ reviewData }) => {
+    return reviewData.map((review) => (
+        <Paper key={review.createdBy} p={'md'} m={'xs'} withBorder shadow="xl">
             <Group>
-                <Avatar
-                   src={item.avatar}
-                   alt={item.name}
-                   radius="xl"
-                />
+                <Avatar alt="avatar" radius="xl">
+                    {review.displayName[0]}
+                </Avatar>
                 <div>
                     <Text size="sm" fw={700}>
-                        {item.name}
+                        {review.displayName}
                     </Text>
                 </div>
                 <Badge
@@ -22,11 +19,11 @@ const ReviewCard = ({reviewData}) => {
                     fw={700}
                     rightSection={<MdGrade color="gold" />}
                 >
-                    {item.rating}
+                    {review.rating}
                 </Badge>
             </Group>
             <Text pl={54} pt="sm" size="sm">
-                {item.review}
+                {review.description}
             </Text>
         </Paper>
     ));

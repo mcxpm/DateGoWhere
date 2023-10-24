@@ -9,18 +9,18 @@ import {
     TextInput,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { doc, updateDoc } from 'firebase/firestore';
 import { useRef } from 'react';
 import { MdAdd, MdEdit, MdSave, MdUpload } from 'react-icons/md';
 import { redirect, useLoaderData } from 'react-router-dom';
 
-import { auth, db } from '../../config/firebase';
+import { auth } from '../../config/firebase';
 import useIdea from '../../hooks/use-idea';
 import { createIdea } from '../../utils/IdeaUtils';
 import Map from '../Map';
 import ActivityForm from './ActivityForm';
 import classes from './CreateIdea.module.css';
 
+// eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
     if (auth.currentUser == null) {
         notifications.show({
@@ -52,28 +52,6 @@ const CreateIdea = () => {
         handleSubmit,
         handleSaveDraft,
     } = useIdea(newIdeaRef);
-
-    const testAddReview = async () => {
-        const docRef = doc(db, 'ideas', 'finaltest_1697688212402'); //replace the last one with the documentID
-
-        const dataToUpdate = {
-            review: {
-                createdAt: new Date(),
-                createdBy: 'createdBy user',
-                description: 'review description',
-                rating: 5,
-                title: 'review test',
-            },
-        };
-
-        // Call updateDoc to update the document with the new data
-        try {
-            await updateDoc(docRef, dataToUpdate);
-            console.log('Document successfully updated');
-        } catch (e) {
-            console.error('Error updating document: ', e);
-        }
-    };
 
     return (
         <>
@@ -154,7 +132,6 @@ const CreateIdea = () => {
                         <Button rightSection={<MdUpload />} onClick={handleSubmit}>
                             Submit
                         </Button>
-                        <Button onClick={testAddReview}>AddReview</Button>
                     </Group>
                 </Box>
             </Paper>

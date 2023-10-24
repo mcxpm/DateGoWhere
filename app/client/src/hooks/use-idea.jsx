@@ -98,7 +98,13 @@ const useIdea = (newIdeaRef) => {
                 autoClose: 2000,
             });
         } catch (e) {
-            console.log('Error saving idea: ', e);
+            console.log('Error saving draft: ', e);
+            notifications.show({
+                color: 'red',
+                title: 'Error saving draft',
+                message: 'Please try again',
+                autoClose: 2000,
+            });
         }
     };
 
@@ -138,6 +144,12 @@ const useIdea = (newIdeaRef) => {
             });
         } catch (e) {
             console.log('Error submitting idea: ', e);
+            notifications.show({
+                color: 'red',
+                title: 'Error publishing date idea',
+                message: 'Please try again',
+                autoClose: 2000,
+            });
         }
     };
 
