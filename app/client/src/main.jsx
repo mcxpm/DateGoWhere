@@ -8,7 +8,9 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 
 import AuthenticationForm from './components/AuthenticationForm';
-import BrowsePage from './components/BrowsePage/BrowsePage';
+import BrowsePage, {
+    loader as browsePageLoader,
+} from './components/BrowsePage/BrowsePage';
 import CreateIdea, {
     loader as createIdeaLoader,
 } from './components/CreateIdea/CreateIdea';
@@ -53,6 +55,7 @@ const router = createBrowserRouter([
                         ],
                     },
                     {
+                        loader: browsePageLoader,
                         path: 'browse',
                         element: <BrowsePage />,
                     },

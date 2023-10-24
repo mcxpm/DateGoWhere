@@ -1,26 +1,21 @@
 import { Box } from '@mantine/core';
-import { collection, getDocs } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useLoaderData } from 'react-router-dom';
 
-import { db } from '../../config/firebase';
 import { getIdeas } from '../../utils/IdeaUtils';
 import classes from './BrowsePage.module.css';
 import ListIdeas from './ListIdeas';
 import SearchBar from './SearchBar';
 
-export default function TestPage() {
-    const [posts, setPosts] = useState([]);
-    const [searchResults, setSearchResults] = useState([]);
+// eslint-disable-next-line react-refresh/only-export-components
+export async function loader() {
+    return await getIdeas();
+}
 
-    useEffect(() => {
-        // Fetch data from Firestore and update state
-        const fetchData = async () => {
-            const ideas = await getIdeas();
-            setPosts(ideas);
-            setSearchResults(ideas);
-        };
-        fetchData();
-    }, []);
+export default function BrowsePage() {
+    const ideas = useLoaderData();
+    const [posts, setPosts] = useState(ideas);
+    const [searchResults, setSearchResults] = useState(ideas);
 
     return (
         <Box p={'xl'}>
