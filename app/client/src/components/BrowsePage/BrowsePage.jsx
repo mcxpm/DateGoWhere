@@ -14,12 +14,12 @@ export async function loader() {
 
 export default function BrowsePage() {
     const ideas = useLoaderData();
-    const [posts, setPosts] = useState(ideas);
+    // const [posts, setPosts] = useState(ideas);
     const [searchResults, setSearchResults] = useState(ideas);
 
     return (
         <Box p={'xl'}>
-            <SearchBar posts={posts} setSearchResults={setSearchResults} />
+            <SearchBar posts={ideas} setSearchResults={setSearchResults} />
             <Box className={classes.cardContainer}>
                 <ListIdeas searchResults={searchResults} />
             </Box>

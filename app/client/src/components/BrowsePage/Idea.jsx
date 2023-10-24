@@ -1,4 +1,12 @@
-import { ActionIcon, Badge, Button, Card, Group, Image, Text } from '@mantine/core';
+import {
+    ActionIcon,
+    // Badge,
+    Button,
+    Card,
+    Group,
+    Image,
+    Text,
+} from '@mantine/core';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 

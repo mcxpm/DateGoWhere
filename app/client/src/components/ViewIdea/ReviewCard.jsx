@@ -6,11 +6,11 @@ const ReviewCard = ({ reviewData }) => {
         <Paper key={review.createdBy} p={'md'} m={'xs'} withBorder shadow="xl">
             <Group>
                 <Avatar alt="avatar" radius="xl">
-                    {review.displayName[0]}
+                    {review.createdBy[0]}
                 </Avatar>
                 <div>
                     <Text size="sm" fw={700}>
-                        {review.displayName}
+                        {review.createdBy}
                     </Text>
                 </div>
                 <Badge

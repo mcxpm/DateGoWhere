@@ -7,7 +7,7 @@ import useAuth from '../../hooks/use-auth';
 import { createReview } from '../../utils/IdeaUtils';
 
 const CreateReview = () => {
-    const { ideaId } = useParams();
+    const { id: ideaId } = useParams();
     const { user, loading } = useAuth();
 
     const form = useForm({

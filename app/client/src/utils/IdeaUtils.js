@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { addDoc, arrayUnion, collection, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 
 import { auth, db } from '../config/firebase';
 
@@ -35,13 +35,21 @@ export const updateIdea = async (ideaRef, newIdea) => {
 export const deleteIdea = async () => { };
 
 export const createReview = async (id, review) => {
+    console.log(id, review)
     const ideaRef = doc(db, 'ideas', id);
-    return await updateDoc(ideaRef, {
+    console.log({
         review: {
             createdAt: new Date(),
             createdBy: auth.currentUser.displayName,
             ...review
         }
+    })
+    return await updateDoc(ideaRef, {
+        reviews: arrayUnion({
+            createdAt: new Date(),
+            createdBy: auth.currentUser.displayName,
+            ...review
+        })
     });
 };
 
