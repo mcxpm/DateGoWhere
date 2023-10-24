@@ -9,10 +9,10 @@ const useAuth = () => {
 
     useEffect(() => {
         const listener = onAuthStateChanged(auth, async (user) => {
-            setLoading(false);
             if (user) {
                 setUser(user);
             }
+            setLoading(false);
         });
         return () => {
             listener();

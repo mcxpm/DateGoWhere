@@ -88,6 +88,7 @@ export function NavBar() {
                             className={classes.link}
                             onClick={() => {
                                 signOut(auth);
+                                navigate(0);
                             }}
                         >
                             <MdLogout
