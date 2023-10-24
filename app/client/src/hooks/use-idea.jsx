@@ -2,9 +2,9 @@ import { notifications } from '@mantine/notifications';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { updateIdea } from '../utils/IdeaUtils';
+import { createIdea, updateIdea } from '../utils/ideaUtils';
 
-const useIdea = (newIdeaRef) => {
+const useIdea = () => {
     const navigate = useNavigate();
 
     const emptyActivity = {
@@ -21,10 +21,20 @@ const useIdea = (newIdeaRef) => {
         tags: [],
     };
 
+    const [ideaRef, setIdeaRef] = useState(null);
     const [title, setTitle] = useState('');
     const [activityList, setActivityList] = useState([]);
-
     const [isEditingList, setIsEditingList] = useState([]);
+
+    const getIdeaRef = async () => {
+        if (ideaRef) {
+            return ideaRef;
+        }
+        const newIdeaRef = await createIdea();
+        console.log(newIdeaRef);
+        setIdeaRef(newIdeaRef);
+        return newIdeaRef;
+    };
 
     const handleAddActivity = () => {
         setActivityList((prev) => [...prev, emptyActivity]);
@@ -65,6 +75,7 @@ const useIdea = (newIdeaRef) => {
     };
 
     const handleSaveDraft = async () => {
+        const newIdeaRef = await getIdeaRef();
         console.log('Saving Idea Draft', newIdeaRef.id);
         if (activityList.length == 0) {
             notifications.show({
@@ -109,6 +120,7 @@ const useIdea = (newIdeaRef) => {
     };
 
     const handleSubmit = async () => {
+        const newIdeaRef = await getIdeaRef();
         console.log('Submitting Idea', newIdeaRef.id);
         if (activityList.length == 0) {
             return notifications.show({

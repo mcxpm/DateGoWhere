@@ -11,11 +11,10 @@ import {
 import { notifications } from '@mantine/notifications';
 import { useRef } from 'react';
 import { MdAdd, MdEdit, MdSave, MdUpload } from 'react-icons/md';
-import { redirect, useLoaderData } from 'react-router-dom';
+import { redirect } from 'react-router-dom';
 
 import { auth } from '../../config/firebase';
 import useIdea from '../../hooks/use-idea';
-import { createIdea } from '../../utils/IdeaUtils';
 import Map from '../Map';
 import ActivityForm from './ActivityForm';
 import classes from './CreateIdea.module.css';
@@ -31,13 +30,10 @@ export async function loader() {
         });
         return redirect('/auth');
     }
-    console.log('create');
-    return await createIdea();
+    return null;
 }
 
 const CreateIdea = () => {
-    const newIdeaRef = useLoaderData();
-
     const ref = useRef(null);
 
     const {
@@ -51,7 +47,7 @@ const CreateIdea = () => {
         handleDiscardActivity,
         handleSubmit,
         handleSaveDraft,
-    } = useIdea(newIdeaRef);
+    } = useIdea();
 
     return (
         <>
