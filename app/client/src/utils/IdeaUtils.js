@@ -1,9 +1,11 @@
-import { addDoc, collection, doc, getDoc, getDocs, setDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore';
 
-import { db } from '../config/firebase';
+import { auth, db } from '../config/firebase';
 
 export const getIdeas = async () => {
-    return await getDocs(collection(db, 'ideas'))
+    const q = query(collection(db, "ideas"), where("isPublished", "==", true));
+    const docs = await getDocs(q);
+    return docs.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 };
 
 export const getIdea = async (id) => {
@@ -12,11 +14,22 @@ export const getIdea = async (id) => {
 };
 
 export const createIdea = async () => {
-    return await addDoc(collection(db, 'ideas'), {});
+    try {
+
+        return await addDoc(collection(db, 'ideas'), {
+            createdBy: auth.currentUser.uid,
+            isPublished: false,
+            reviews: []
+        });
+    }
+    catch (e) {
+        console.log(e)
+        throw e;
+    }
 };
 
 export const updateIdea = async (ideaRef, newIdea) => {
-    return await setDoc(ideaRef, newIdea)
+    return await updateDoc(ideaRef, newIdea)
 };
 
 export const deleteIdea = async () => { };

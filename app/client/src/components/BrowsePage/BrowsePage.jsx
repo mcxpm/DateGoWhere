@@ -3,6 +3,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 
 import { db } from '../../config/firebase';
+import { getIdeas } from '../../utils/IdeaUtils';
 import classes from './BrowsePage.module.css';
 import ListIdeas from './ListIdeas';
 import SearchBar from './SearchBar';
@@ -14,21 +15,9 @@ export default function TestPage() {
     useEffect(() => {
         // Fetch data from Firestore and update state
         const fetchData = async () => {
-            const collectionRef = collection(db, 'ideas');
-            const querySnapshot = await getDocs(collectionRef);
-            const docs = querySnapshot.docs.map((doc) => {
-                const data = doc.data()
-                data.id = doc.id
-                return data
-            });
-            console.log(docs);
-            const ideasData = [];
-            docs.forEach((doc) => {
-                console.log(doc);
-                ideasData.push(doc);
-            });
-            setPosts(ideasData);
-            setSearchResults(ideasData);
+            const ideas = await getIdeas();
+            setPosts(ideas);
+            setSearchResults(ideas);
         };
         fetchData();
     }, []);

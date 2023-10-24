@@ -10,132 +10,48 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { doc, updateDoc } from 'firebase/firestore';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { MdAdd, MdEdit, MdSave, MdUpload } from 'react-icons/md';
-import { useLoaderData, useNavigate } from 'react-router-dom';
+import { redirect, useLoaderData } from 'react-router-dom';
 
-import { db } from '../../config/firebase';
-import { createIdea, updateIdea } from '../../utils/IdeaUtils';
+import { auth, db } from '../../config/firebase';
+import useIdea from '../../hooks/use-idea';
+import { createIdea } from '../../utils/IdeaUtils';
 import Map from '../Map';
 import ActivityForm from './ActivityForm';
 import classes from './CreateIdea.module.css';
 
 export async function loader() {
+    if (auth.currentUser == null) {
+        notifications.show({
+            color: 'red',
+            title: 'User not authenticated',
+            message: 'Please sign in.',
+            autoClose: 2000,
+        });
+        return redirect('/auth');
+    }
     console.log('create');
     return await createIdea();
 }
 
 const CreateIdea = () => {
     const newIdeaRef = useLoaderData();
-    const navigate = useNavigate();
 
     const ref = useRef(null);
 
-    const emptyActivity = {
-        start: '',
-        end: '',
-        name: '',
-        location: {
-            name: '',
-            description: '',
-            latLng: null,
-        },
-        description: '',
-        budget: '',
-        tags: [],
-    };
-
-    const [title, setTitle] = useState('');
-    const [activityList, setActivityList] = useState([]);
-
-    const [isEditingList, setIsEditingList] = useState([]);
-
-    const handleSaveActivity = (idx, values) => {
-        console.log('adding activity: ', values);
-        const id = idx == -1 ? activityList.length - 1 : idx;
-        setActivityList((prev) => {
-            const newActivityList = [...prev];
-            newActivityList[id] = values;
-            return newActivityList;
-        });
-        setIsEditingList((prev) => {
-            const newIsEditingList = [...prev];
-            newIsEditingList[id] = false;
-            return newIsEditingList;
-        });
-    };
-
-    const handleDiscardActivity = (idx) => {
-        const id = idx == -1 ? activityList.length - 1 : idx;
-        setActivityList((prev) => {
-            const newActivityList = [...prev];
-            newActivityList.splice(id, 1);
-            return newActivityList;
-        });
-    };
-
-    const handleAddActivity = () => {
-        setActivityList((prev) => [...prev, emptyActivity]);
-        setIsEditingList((prev) => [...prev, true]);
-    };
-
-    const handleEditActivity = (idx) => {
-        setIsEditingList((prev) => {
-            const newIsEditingList = [...prev];
-            newIsEditingList[idx] = !newIsEditingList[idx];
-
-            return newIsEditingList;
-        });
-    };
-
-    // const handleChangeActivity = (key, idx, value) => {
-    //     const id = idx == -1 ? activityList.length - 1 : idx;
-    //     setActivityList((prev) => {
-    //         const newActivityList = [...prev];
-    //         if (key == 'location') {
-    //             newActivityList[id][key] = {
-    //                 ...newActivityList[id][key],
-    //                 ...value,
-    //             };
-    //         } else {
-    //             newActivityList[id][key] = value;
-    //         }
-    //         return newActivityList;
-    //     });
-    // };
-
-    const handleSubmit = async () => {
-        console.log('submit', newIdeaRef.id);
-        if (activityList.length == 0) {
-            return notifications.show({
-                color: 'red',
-                title: 'Error',
-                message: 'Dates must have at least one activity',
-                autoClose: 2000,
-            });
-        }
-        if (title == '') {
-            return notifications.show({
-                color: 'red',
-                title: 'Error',
-                message: 'Dates must have a name',
-                autoClose: 2000,
-            });
-        }
-        try {
-            updateIdea(newIdeaRef, {
-                title: title,
-                activities: activityList.map((obj) => {
-                    return Object.assign({}, obj);
-                }),
-            }).then(() => {
-                console.log('hadsads');
-                navigate('/ideas/view/' + newIdeaRef.id, { replace: true });
-            });
-        } catch (e) {
-            console.log('Error creating idea: ', e);
-        }
-    };
+    const {
+        title,
+        setTitle,
+        activityList,
+        isEditingList,
+        handleAddActivity,
+        handleSaveActivity,
+        handleEditActivity,
+        handleDiscardActivity,
+        handleSubmit,
+        handleSaveDraft,
+    } = useIdea(newIdeaRef);
 
     const testAddReview = async () => {
         const docRef = doc(db, 'ideas', 'finaltest_1697688212402'); //replace the last one with the documentID
@@ -219,7 +135,11 @@ const CreateIdea = () => {
                 <Box>
                     <Divider my={'sm'} />
                     <Group justify="space-between">
-                        <Button variant="light" leftSection={<MdSave />}>
+                        <Button
+                            variant="light"
+                            leftSection={<MdSave />}
+                            onClick={handleSaveDraft}
+                        >
                             Save Draft
                         </Button>
                         <Button
