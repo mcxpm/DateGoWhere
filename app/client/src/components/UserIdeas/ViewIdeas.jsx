@@ -23,8 +23,7 @@ export default function ViewIdeas() {
             for (const idea of list) {
                 const obj = await getIdea(idea);
                 const details = obj.data()
-                console.log(details)
-                ideaObjectsArray.push(obj);
+                ideaObjectsArray.push(details);
             }
             setIdeaObjects(ideaObjectsArray);
         };
@@ -43,10 +42,13 @@ export default function ViewIdeas() {
     }
 
     return (
-        //can use the ideaobjects array that has the info for all the reviews that a user has
         <div className="">
-            {list.map((obj, index) => (
-                <p key={index}>{obj}</p>
+            {ideaObjects.map((obj, index) => (
+                <div key={index}>
+                    <p>Created by: {obj.createdBy}</p>
+                    <p>Is Published: {obj.isPublished.toString()}</p>
+                    <p>Is Public: {obj.isPublic.toString()}</p>
+                </div>
             ))}
         </div>
     );
