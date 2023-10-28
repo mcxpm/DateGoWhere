@@ -16,6 +16,7 @@ import CreateIdea, {
 } from './components/CreateIdea/CreateIdea';
 import HeroPage from './components/HeroPage/HeroPage';
 import TwoPanelLayout from './components/TwoPanelLayout';
+import ViewIdeas from './components/UserIdeas/ViewIdeas';
 import ViewIdea, { loader as viewIdeaLoader } from './components/ViewIdea/ViewIdea';
 import ErrorPage from './ErrorPage';
 import Layout from './Layout';
@@ -71,7 +72,7 @@ const router = createBrowserRouter([
             },
             {
                 path: 'placeholder',
-                element: <div>your ideas</div>,
+                element: <ViewIdeas />,
             },
         ],
     },
