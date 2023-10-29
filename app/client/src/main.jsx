@@ -2,10 +2,10 @@ import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 
 import { createTheme, MantineProvider } from '@mantine/core';
-import { Notifications } from '@mantine/notifications';
+import { Notifications, notifications } from '@mantine/notifications';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Outlet, redirect, RouterProvider } from 'react-router-dom';
 
 import AuthenticationForm from './components/AuthenticationForm';
 import BrowsePage, {
@@ -18,6 +18,7 @@ import HeroPage from './components/HeroPage/HeroPage';
 import TwoPanelLayout from './components/TwoPanelLayout';
 import ViewIdeas from './components/UserIdeas/ViewIdeas';
 import ViewIdea, { loader as viewIdeaLoader } from './components/ViewIdea/ViewIdea';
+import { auth } from './config/firebase';
 import ErrorPage from './ErrorPage';
 import Layout from './Layout';
 
@@ -71,7 +72,22 @@ const router = createBrowserRouter([
                 element: <HeroPage />,
             },
             {
-                path: 'placeholder',
+                path: 'user/ideas',
+                loader: () => {
+                    if (auth.currentUser == null) {
+                        notifications.show({
+                            color: 'red',
+                            title: 'User not authenticated',
+                            message: 'Please sign in.',
+                            autoClose: 2000,
+                        });
+                        return redirect('/auth');
+                    }
+                    return redirect(`/${auth.currentUser.uid}/ideas`);
+                },
+            },
+            {
+                path: ':id/ideas',
                 element: <ViewIdeas />,
             },
         ],
