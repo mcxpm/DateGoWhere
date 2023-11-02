@@ -2,22 +2,26 @@ import {
     Box,
     Button,
     Divider,
+    Flex,
     Group,
+    MultiSelect,
     Paper,
     Stack,
+    Switch,
     Text,
     TextInput,
 } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useRef } from 'react';
 import { MdAdd, MdEdit, MdSave, MdUpload } from 'react-icons/md';
-import { redirect } from 'react-router-dom';
+import { Form, redirect } from 'react-router-dom';
 
 import { auth } from '../../config/firebase';
 import useIdea from '../../hooks/use-idea';
 import Map from '../Map';
 import ActivityForm from './ActivityForm';
-import classes from './CreateIdea.module.css';
+import classes from './CreateIdea.module.css';  
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
@@ -38,7 +42,6 @@ const CreateIdea = () => {
 
     const {
         title,
-        setTitle,
         activityList,
         isEditingList,
         handleAddActivity,
@@ -49,19 +52,61 @@ const CreateIdea = () => {
         handleSaveDraft,
     } = useIdea();
 
+    const form = useForm({
+        initialValues:{
+            title : '',
+            tags: [],
+            isPublic :true,
+        },
+        validate:{
+            title: (value) => (value ? null : 'Date must have a title'),
+        }
+    })
+
     return (
         <>
             {/* <Form method="post" action="/ideas/create"> */}
             <Paper p={'md'} m={'xs'} withBorder shadow="xl" className={classes.leftPanel}>
                 <Stack gap={'sm'}>
-                    <TextInput
-                        label="Give your date a name!"
-                        placeholder="Date Name"
-                        withAsterisk
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                    />
-                    <Divider />
+                    <Form>
+                        <TextInput
+                            label="Give your date a name!"
+                            placeholder="Date Name"
+                            withAsterisk
+                            value={title}
+                            {...form.getInputProps('title')}
+                        />
+                        <Flex align="flex-end" gap="xl" >
+                            <MultiSelect
+                                variant="filled"
+                                size="xs"
+                                label="Date Tags"
+                                placeholder="Pick Category"
+                                data={[
+                                    'Romantic',
+                                    'Outdoor',
+                                    'Food',
+                                    'Sport',
+                                    'Dance',
+                                    'Cultural',
+                                ]}
+                                searchable
+                                nothingFoundMessage="Nothing found..."
+                                {...form.getInputProps('tags')}
+                            />
+
+                            <Switch
+                                defaultChecked
+                                py={6}
+                                color="pink"
+                                label="Make this date idea public"
+                              
+                                size='xs'
+                                {...form.getInputProps('isPublic')}
+                            />
+                        </Flex>
+                       
+                    </Form>
                     {activityList.map((activity, idx) => {
                         return !isEditingList[idx] ? (
                             <Paper key={idx} p="xs" shadow="none" withBorder>

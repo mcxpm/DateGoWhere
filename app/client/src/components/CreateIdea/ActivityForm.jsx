@@ -1,7 +1,6 @@
 import {
     Button,
     Grid,
-    MultiSelect,
     NumberInput,
     Paper,
     SimpleGrid,
@@ -84,16 +83,7 @@ const ActivityForm = ({ idx, activity, handleDiscardActivity, handleSaveActivity
                     required
                     {...form.getInputProps('description')}
                 />
-                <MultiSelect
-                    variant="filled"
-                    size="xs"
-                    label="Date Tags"
-                    placeholder="Pick Category"
-                    data={['Romantic', 'Outdoor', 'Food', 'Sport', 'Dance', 'Cultural']}
-                    searchable
-                    nothingFoundMessage="Nothing found..."
-                    {...form.getInputProps('tags')}
-                />
+                
 
                 <Grid align="end">
                     <Grid.Col span={6}>
