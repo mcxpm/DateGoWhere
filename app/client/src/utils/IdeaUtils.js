@@ -1,4 +1,4 @@
-import { addDoc, arrayUnion, collection, doc, getDoc, getDocs, query, updateDoc, where } from 'firebase/firestore';
+import { addDoc, arrayUnion, collection, doc, getDoc, getDocs, query, setDoc,updateDoc, where } from 'firebase/firestore';
 
 import { auth, db } from '../config/firebase';
 
@@ -13,14 +13,36 @@ export const getIdea = async (id) => {
     return await getDoc(ideaRef);
 };
 
+export const getUserIdeas = async (uid) => {
+    const userRef = doc(db, 'users', uid);
+    const docSnap = await getDoc(userRef);
+    const ideasList = docSnap.data(); 
+    return ideasList
+}
+
 export const createIdea = async () => {
     try {
-        return await addDoc(collection(db, 'ideas'), {
+        const idea = {
             createdBy: auth.currentUser.uid,
             isPublished: false,
             isPublic: true,
-            reviews: []
-        });
+            reviews: [] 
+        }
+        
+        const ideaDocRef = await addDoc(collection(db, 'ideas'), idea);
+        const ideaDocId = ideaDocRef.id;
+        const userDocRef = await doc(db, "users", auth.currentUser.uid)
+        const userSnap = await getDoc(userDocRef);
+        if (userSnap.exists()) {
+            await updateDoc(userDocRef, {
+                ideas: arrayUnion(ideaDocId)
+            })
+        } else {
+            await setDoc(userDocRef, {
+                ideas: [ideaDocId]
+            })
+        }    
+        return ideaDocRef;
     }
     catch (e) {
         console.log("Error creating idea", e)
