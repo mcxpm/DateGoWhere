@@ -2,7 +2,7 @@ import { notifications } from '@mantine/notifications';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { createIdea, updateIdea } from '../utils/ideaUtils';
+import { createIdea, updateIdea } from '../utils/IdeaUtils';
 
 const useIdea = () => {
     const navigate = useNavigate();

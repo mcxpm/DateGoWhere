@@ -27,7 +27,7 @@ const GMAP_ZOOM = 15;
 //     },
 // ];
 
-const Map = forwardRef(function Map({ activityList }, ref) {
+const Map = forwardRef(function Map({ activityList, isViewing }, ref) {
     const mapRef = useRef();
     const [map, setMap] = useState(null);
     const [markers, setMarkers] = useState([]);
@@ -49,7 +49,7 @@ const Map = forwardRef(function Map({ activityList }, ref) {
 
     const calculateAndDisplayRoute = (activityList) => {
         directionsService
-            .route({
+            ?.route({
                 origin: activityList[0].location.latLng,
                 destination: activityList[activityList.length - 1].location.latLng,
                 waypoints: activityList
@@ -74,37 +74,37 @@ const Map = forwardRef(function Map({ activityList }, ref) {
     }, []);
 
     useEffect(() => {
-        markers.forEach((marker) => marker.setMap(null));
-        setMarkers(
-            activityList.map((activity) => {
-                const marker = new window.google.maps.Marker({
-                    position: activity.location.latLng,
-                    map,
-                });
-                return marker;
-            }),
-        );
+        if (isViewing) {
+            calculateAndDisplayRoute(activityList);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [directionsService]);
+
+    useEffect(() => {
+        if (!isViewing) {
+            markers.forEach((marker) => marker.setMap(null));
+            setMarkers(
+                activityList.map((activity) => {
+                    const marker = new window.google.maps.Marker({
+                        position: activity.location.latLng,
+                        map,
+                    });
+                    return marker;
+                }),
+            );
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activityList]);
 
     useEffect(() => {
         // console.log(markers);
-        markers.forEach((marker) => marker.setMap(map));
+        if (!isViewing) {
+            markers.forEach((marker) => marker.setMap(map));
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [markers]);
 
-    return (
-        <>
-            {/* <Button
-                pos={'absolute'}
-                style={{ zIndex: 2 }}
-                onClick={calculateAndDisplayRoute}
-            >
-                Get sample route
-            </Button> */}
-            <GMap mapRef={mapRef} />
-        </>
-    );
+    return <GMap mapRef={mapRef} />;
 });
 
 export default Map;
