@@ -11,11 +11,10 @@ import {
     Text,
     TextInput,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useRef } from 'react';
 import { MdAdd, MdEdit, MdSave, MdUpload } from 'react-icons/md';
-import { Form, redirect } from 'react-router-dom';
+import { redirect } from 'react-router-dom';
 
 import { auth } from '../../config/firebase';
 import useIdea from '../../hooks/use-idea';
@@ -41,7 +40,8 @@ const CreateIdea = () => {
     const ref = useRef(null);
 
     const {
-        title,
+        info,
+        setInfo,
         activityList,
         isEditingList,
         handleAddActivity,
@@ -52,29 +52,20 @@ const CreateIdea = () => {
         handleSaveDraft,
     } = useIdea();
 
-    const form = useForm({
-        initialValues:{
-            title : '',
-            tags: [],
-            isPublic :true,
-        },
-        validate:{
-            title: (value) => (value ? null : 'Date must have a title'),
-        }
-    })
 
+    console.log(info)
     return (
         <>
             {/* <Form method="post" action="/ideas/create"> */}
             <Paper p={'md'} m={'xs'} withBorder shadow="xl" className={classes.leftPanel}>
                 <Stack gap={'sm'}>
-                    <Form>
+                    
                         <TextInput
                             label="Give your date a name!"
                             placeholder="Date Name"
                             withAsterisk
-                            value={title}
-                            {...form.getInputProps('title')}
+                            value={info.title}
+                            onChange={(e)=>setInfo({...info, title: e.target.value})}
                         />
                         <Flex align="flex-end" gap="xl" >
                             <MultiSelect
@@ -92,7 +83,7 @@ const CreateIdea = () => {
                                 ]}
                                 searchable
                                 nothingFoundMessage="Nothing found..."
-                                {...form.getInputProps('tags')}
+                                onChange={(values)=>setInfo({...info, tags: values })}
                             />
 
                             <Switch
@@ -100,13 +91,12 @@ const CreateIdea = () => {
                                 py={6}
                                 color="pink"
                                 label="Make this date idea public"
-                              
                                 size='xs'
-                                {...form.getInputProps('isPublic')}
+                                onChange={(e)=>setInfo({...info, isPublic: e.target.checked})}
                             />
                         </Flex>
                        
-                    </Form>
+                   
                     {activityList.map((activity, idx) => {
                         return !isEditingList[idx] ? (
                             <Paper key={idx} p="xs" shadow="none" withBorder>
