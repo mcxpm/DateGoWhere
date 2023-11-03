@@ -2,7 +2,7 @@ import { notifications } from '@mantine/notifications';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { createIdea, updateIdea } from '../utils/ideaUtils';
+import { createIdea, updateIdea } from '../utils/IdeaUtils';
 
 const useIdea = () => {
     const navigate = useNavigate();
@@ -18,11 +18,14 @@ const useIdea = () => {
         },
         description: '',
         budget: '',
-        tags: [],
     };
 
     const [ideaRef, setIdeaRef] = useState(null);
-    const [title, setTitle] = useState('');
+    const [info, setInfo] = useState({
+        title: "",
+        isPublic: true,
+        tags: [],
+    });
     const [activityList, setActivityList] = useState([]);
     const [isEditingList, setIsEditingList] = useState([]);
 
@@ -86,7 +89,7 @@ const useIdea = () => {
             });
             return;
         }
-        if (title == '') {
+        if (info.title == '') {
             notifications.show({
                 color: 'red',
                 title: 'Error',
@@ -97,7 +100,9 @@ const useIdea = () => {
         }
         try {
             updateIdea(newIdeaRef, {
-                title: title,
+                title: info.title,
+                tags: info.tags,
+                isPublic: info.isPublic,
                 activities: activityList.map((obj) => {
                     return Object.assign({}, obj);
                 }),
@@ -130,7 +135,7 @@ const useIdea = () => {
                 autoClose: 2000,
             });
         }
-        if (title == '') {
+        if (info.title == '') {
             return notifications.show({
                 color: 'red',
                 title: 'Error',
@@ -140,7 +145,9 @@ const useIdea = () => {
         }
         try {
             updateIdea(newIdeaRef, {
-                title: title,
+                title: info.title,
+                tags: info.tags,
+                isPublic: info.isPublic,
                 activities: activityList.map((obj) => {
                     return Object.assign({}, obj);
                 }),
@@ -166,8 +173,8 @@ const useIdea = () => {
     };
 
     return {
-        title,
-        setTitle,
+        info,
+        setInfo,
         activityList,
         isEditingList,
         handleAddActivity,
