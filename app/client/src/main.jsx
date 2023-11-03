@@ -8,16 +8,15 @@ import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
 
 import AuthenticationForm from './components/AuthenticationForm';
-import BrowsePage from './components/BrowsePage/BrowsePage';
+import BrowsePage, {
+    loader as browsePageLoader,
+} from './components/BrowsePage/BrowsePage';
 import CreateIdea, {
     loader as createIdeaLoader,
 } from './components/CreateIdea/CreateIdea';
 import HeroPage from './components/HeroPage/HeroPage';
 import TwoPanelLayout from './components/TwoPanelLayout';
-import TestViewIdea, {
-    loader as testViewIdeaLoader,
-} from './components/ViewIdea/TestViewIdea';
-import ViewIdea from './components/ViewIdea/ViewIdea';
+import ViewIdea, { loader as viewIdeaLoader } from './components/ViewIdea/ViewIdea';
 import ErrorPage from './ErrorPage';
 import Layout from './Layout';
 
@@ -45,9 +44,9 @@ const router = createBrowserRouter([
                                 element: <CreateIdea />,
                             },
                             {
-                                loader: testViewIdeaLoader,
+                                loader: viewIdeaLoader,
                                 path: 'view/:id',
-                                element: <TestViewIdea />,
+                                element: <ViewIdea />,
                             },
                             {
                                 path: 'edit/:id',
@@ -56,6 +55,7 @@ const router = createBrowserRouter([
                         ],
                     },
                     {
+                        loader: browsePageLoader,
                         path: 'browse',
                         element: <BrowsePage />,
                     },
@@ -66,12 +66,12 @@ const router = createBrowserRouter([
                 element: <div>users</div>,
             },
             {
-                path: '',
+                index: true,
                 element: <HeroPage />,
             },
             {
                 path: 'placeholder',
-                element: <ViewIdea />,
+                element: <div>your ideas</div>,
             },
         ],
     },

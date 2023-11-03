@@ -2,176 +2,111 @@ import {
     Box,
     Button,
     Divider,
+    Flex,
     Group,
+    MultiSelect,
     Paper,
     Stack,
+    Switch,
     Text,
     TextInput,
 } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { doc, updateDoc } from 'firebase/firestore';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import { MdAdd, MdEdit, MdSave, MdUpload } from 'react-icons/md';
-import { useLoaderData, useNavigate } from 'react-router-dom';
+import { Form, redirect } from 'react-router-dom';
 
-import { db } from '../../config/firebase';
-import { createIdea, updateIdea } from '../../utils/IdeaUtils';
+import { auth } from '../../config/firebase';
+import useIdea from '../../hooks/use-idea';
 import Map from '../Map';
 import ActivityForm from './ActivityForm';
-import classes from './CreateIdea.module.css';
+import classes from './CreateIdea.module.css';  
 
+// eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
-    console.log('create');
-    return await createIdea();
+    if (auth.currentUser == null) {
+        notifications.show({
+            color: 'red',
+            title: 'User not authenticated',
+            message: 'Please sign in.',
+            autoClose: 2000,
+        });
+        return redirect('/auth');
+    }
+    return null;
 }
 
 const CreateIdea = () => {
-    const newIdeaRef = useLoaderData();
-    const navigate = useNavigate();
-
     const ref = useRef(null);
 
-    const emptyActivity = {
-        start: '',
-        end: '',
-        name: '',
-        location: {
-            name: '',
-            description: '',
-            latLng: null,
+    const {
+        title,
+        activityList,
+        isEditingList,
+        handleAddActivity,
+        handleSaveActivity,
+        handleEditActivity,
+        handleDiscardActivity,
+        handleSubmit,
+        handleSaveDraft,
+    } = useIdea();
+
+    const form = useForm({
+        initialValues:{
+            title : '',
+            tags: [],
+            isPublic :true,
         },
-        description: '',
-        budget: '',
-        tags: [],
-    };
-
-    const [title, setTitle] = useState('');
-    const [activityList, setActivityList] = useState([]);
-
-    const [isEditingList, setIsEditingList] = useState([]);
-
-    const handleSaveActivity = (idx, values) => {
-        console.log('adding activity: ', values);
-        const id = idx == -1 ? activityList.length - 1 : idx;
-        setActivityList((prev) => {
-            const newActivityList = [...prev];
-            newActivityList[id] = values;
-            return newActivityList;
-        });
-        setIsEditingList((prev) => {
-            const newIsEditingList = [...prev];
-            newIsEditingList[id] = false;
-            return newIsEditingList;
-        });
-    };
-
-    const handleDiscardActivity = (idx) => {
-        const id = idx == -1 ? activityList.length - 1 : idx;
-        setActivityList((prev) => {
-            const newActivityList = [...prev];
-            newActivityList.splice(id, 1);
-            return newActivityList;
-        });
-    };
-
-    const handleAddActivity = () => {
-        setActivityList((prev) => [...prev, emptyActivity]);
-        setIsEditingList((prev) => [...prev, true]);
-    };
-
-    const handleEditActivity = (idx) => {
-        setIsEditingList((prev) => {
-            const newIsEditingList = [...prev];
-            newIsEditingList[idx] = !newIsEditingList[idx];
-
-            return newIsEditingList;
-        });
-    };
-
-    // const handleChangeActivity = (key, idx, value) => {
-    //     const id = idx == -1 ? activityList.length - 1 : idx;
-    //     setActivityList((prev) => {
-    //         const newActivityList = [...prev];
-    //         if (key == 'location') {
-    //             newActivityList[id][key] = {
-    //                 ...newActivityList[id][key],
-    //                 ...value,
-    //             };
-    //         } else {
-    //             newActivityList[id][key] = value;
-    //         }
-    //         return newActivityList;
-    //     });
-    // };
-
-    const handleSubmit = async () => {
-        console.log('submit', newIdeaRef.id);
-        if (activityList.length == 0) {
-            return notifications.show({
-                color: 'red',
-                title: 'Error',
-                message: 'Dates must have at least one activity',
-                autoClose: 2000,
-            });
+        validate:{
+            title: (value) => (value ? null : 'Date must have a title'),
         }
-        if (title == '') {
-            return notifications.show({
-                color: 'red',
-                title: 'Error',
-                message: 'Dates must have a name',
-                autoClose: 2000,
-            });
-        }
-        try {
-            updateIdea(newIdeaRef, {
-                title: title,
-                activities: activityList.map((obj) => {
-                    return Object.assign({}, obj);
-                }),
-            }).then(() => {
-                console.log('hadsads');
-                navigate('/ideas/view/' + newIdeaRef.id, { replace: true });
-            });
-        } catch (e) {
-            console.log('Error creating idea: ', e);
-        }
-    };
-
-    const testAddReview = async () => {
-        const docRef = doc(db, 'ideas', 'finaltest_1697688212402'); //replace the last one with the documentID
-
-        const dataToUpdate = {
-            review: {
-                createdAt: new Date(),
-                createdBy: 'createdBy user',
-                description: 'review description',
-                rating: 5,
-                title: 'review test',
-            },
-        };
-
-        // Call updateDoc to update the document with the new data
-        try {
-            await updateDoc(docRef, dataToUpdate);
-            console.log('Document successfully updated');
-        } catch (e) {
-            console.error('Error updating document: ', e);
-        }
-    };
+    })
 
     return (
         <>
             {/* <Form method="post" action="/ideas/create"> */}
             <Paper p={'md'} m={'xs'} withBorder shadow="xl" className={classes.leftPanel}>
                 <Stack gap={'sm'}>
-                    <TextInput
-                        label="Give your date a name!"
-                        placeholder="Date Name"
-                        withAsterisk
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                    />
-                    <Divider />
+                    <Form>
+                        <TextInput
+                            label="Give your date a name!"
+                            placeholder="Date Name"
+                            withAsterisk
+                            value={title}
+                            {...form.getInputProps('title')}
+                        />
+                        <Flex align="flex-end" gap="xl" >
+                            <MultiSelect
+                                variant="filled"
+                                size="xs"
+                                label="Date Tags"
+                                placeholder="Pick Category"
+                                data={[
+                                    'Romantic',
+                                    'Outdoor',
+                                    'Food',
+                                    'Sport',
+                                    'Dance',
+                                    'Cultural',
+                                ]}
+                                searchable
+                                nothingFoundMessage="Nothing found..."
+                                {...form.getInputProps('tags')}
+                            />
+
+                            <Switch
+                                defaultChecked
+                                py={6}
+                                color="pink"
+                                label="Make this date idea public"
+                              
+                                size='xs'
+                                {...form.getInputProps('isPublic')}
+                            />
+                        </Flex>
+                       
+                    </Form>
                     {activityList.map((activity, idx) => {
                         return !isEditingList[idx] ? (
                             <Paper key={idx} p="xs" shadow="none" withBorder>
@@ -219,7 +154,11 @@ const CreateIdea = () => {
                 <Box>
                     <Divider my={'sm'} />
                     <Group justify="space-between">
-                        <Button variant="light" leftSection={<MdSave />}>
+                        <Button
+                            variant="light"
+                            leftSection={<MdSave />}
+                            onClick={handleSaveDraft}
+                        >
                             Save Draft
                         </Button>
                         <Button
@@ -234,7 +173,6 @@ const CreateIdea = () => {
                         <Button rightSection={<MdUpload />} onClick={handleSubmit}>
                             Submit
                         </Button>
-                        <Button onClick={testAddReview}>AddReview</Button>
                     </Group>
                 </Box>
             </Paper>

@@ -1,24 +1,25 @@
 import { Box } from '@mantine/core';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useLoaderData } from 'react-router-dom';
 
+import { getIdeas } from '../../utils/IdeaUtils';
 import classes from './BrowsePage.module.css';
 import ListIdeas from './ListIdeas';
-import MockData from './MockData';
 import SearchBar from './SearchBar';
 
-export default function BrowsePage() {
-    const [posts, setPosts] = useState([]);
-    const [searchResults, setSearchResults] = useState([]);
+// eslint-disable-next-line react-refresh/only-export-components
+export async function loader() {
+    return await getIdeas();
+}
 
-    useEffect(() => {
-        const data = MockData;
-        setPosts(data);
-        setSearchResults(data);
-    }, []);
+export default function BrowsePage() {
+    const ideas = useLoaderData();
+    // const [posts, setPosts] = useState(ideas);
+    const [searchResults, setSearchResults] = useState(ideas);
 
     return (
         <Box p={'xl'}>
-            <SearchBar posts={posts} setSearchResults={setSearchResults} />
+            <SearchBar posts={ideas} setSearchResults={setSearchResults} />
             <Box className={classes.cardContainer}>
                 <ListIdeas searchResults={searchResults} />
             </Box>

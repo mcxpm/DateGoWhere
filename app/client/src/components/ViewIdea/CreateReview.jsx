@@ -1,21 +1,70 @@
 import { Avatar, Button, Group, Paper, Rating, Text, Textarea } from '@mantine/core';
+import { isNotEmpty, useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
+import { useParams } from 'react-router-dom';
 
-const UserData = [
-    {
-        name: 'Tan Shao Chong',
-        avatar: 'https://images.unsplash.com/photo-1624298357597-fd92dfbec01d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=250&q=80',
-    },
-];
+import useAuth from '../../hooks/use-auth';
+import { createReview } from '../../utils/IdeaUtils';
 
-const CreateReview = ({ handleAddActivity }) => {
-    return UserData.map((item) => (
-        <>
-            <Paper key={item.name} p={'md'} m={'xs'} withBorder shadow="xl">
+const CreateReview = () => {
+    const { id: ideaId } = useParams();
+    const { user, loading } = useAuth();
+
+    const form = useForm({
+        initialValues: {
+            rating: 2.5,
+            description: '',
+        },
+        validate: {
+            description: isNotEmpty('Please enter a description'),
+        },
+    });
+
+    const handleAddReview = async (values) => {
+        try {
+            createReview(ideaId, values).then(() => {
+                notifications.show({
+                    color: 'green',
+                    title: 'Success',
+                    message: 'Review has been added successfully',
+                    autoClose: 2000,
+                });
+            });
+        } catch (e) {
+            console.log('Error adding reviewing: ', e);
+            notifications.show({
+                color: 'red',
+                title: 'Error adding review',
+                message: 'Please try again',
+                autoClose: 2000,
+            });
+        }
+    };
+
+    if (loading) {
+        return <div className="">loading...</div>;
+    }
+
+    if (!user) {
+        return <div className="">please sign in...</div>;
+    }
+
+    return (
+        <form
+            onSubmit={form.onSubmit(async (values) => {
+                if (form.isValid) {
+                    await handleAddReview(values);
+                }
+            })}
+        >
+            <Paper p={'md'} m={'xs'} withBorder shadow="xl">
                 <Group>
-                    <Avatar src={item.avatar} alt={item.name} radius="xl" />
+                    <Avatar src={user.photoURL} alt={'avatar'} radius="xl">
+                        {user.displayName[0]}
+                    </Avatar>
                     <div>
                         <Text size="sm" fw={700}>
-                            {item.name}
+                            {user.displayName}
                         </Text>
                         <Text size="xs" c={'dimmed'} fw={400}>
                             Posting publicly
@@ -23,9 +72,8 @@ const CreateReview = ({ handleAddActivity }) => {
                     </div>
                 </Group>
                 <Group justify="center">
-
                     {/* to settle collecting value and storing ot firebase */}
-                    <Rating defaultValue={5} size="lg" />
+                    <Rating size="lg" {...form.getInputProps('rating')} />
                 </Group>
                 <Textarea
                     label="Your Review"
@@ -36,16 +84,17 @@ const CreateReview = ({ handleAddActivity }) => {
                     autosize
                     maxRows={5}
                     required
+                    {...form.getInputProps('description')}
                 />
             </Paper>
             <Group justify="flex-end">
                 {/* To settle submit review to firebase */}
-                <Button onClick={handleAddActivity} variant="outline">
+                <Button type="submit" variant="outline">
                     Submit
                 </Button>
             </Group>
-        </>
-    ));
+        </form>
+    );
 };
 
 export default CreateReview;
