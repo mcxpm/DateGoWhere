@@ -7,7 +7,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, Outlet, redirect, RouterProvider } from 'react-router-dom';
 
-import AuthenticationForm from './components/AuthenticationForm';
+import AuthenticationForm, {
+    loader as AuthLoader,
+} from './components/AuthenticationForm';
 import BrowsePage, {
     loader as browsePageLoader,
 } from './components/BrowsePage/BrowsePage';
@@ -16,7 +18,7 @@ import CreateIdea, {
 } from './components/CreateIdea/CreateIdea';
 import HeroPage from './components/HeroPage/HeroPage';
 import TwoPanelLayout from './components/TwoPanelLayout';
-import ViewIdeas from './components/UserIdeas/ViewIdeas';
+import ViewIdeas, { loader as userIdeasLoader } from './components/UserIdeas/ViewIdeas';
 import ViewIdea, { loader as viewIdeaLoader } from './components/ViewIdea/ViewIdea';
 import { auth } from './config/firebase';
 import ErrorPage from './ErrorPage';
@@ -30,6 +32,7 @@ const router = createBrowserRouter([
         children: [
             {
                 path: 'auth',
+                loader: AuthLoader,
                 element: <AuthenticationForm />,
             },
             {
@@ -88,6 +91,7 @@ const router = createBrowserRouter([
             },
             {
                 path: ':id/ideas',
+                loader: userIdeasLoader,
                 element: <ViewIdeas />,
             },
         ],

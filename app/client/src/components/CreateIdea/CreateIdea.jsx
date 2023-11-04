@@ -20,7 +20,7 @@ import { auth } from '../../config/firebase';
 import useIdea from '../../hooks/use-idea';
 import Map from '../Map';
 import ActivityForm from './ActivityForm';
-import classes from './CreateIdea.module.css';  
+import classes from './CreateIdea.module.css';
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
@@ -52,51 +52,49 @@ const CreateIdea = () => {
         handleSaveDraft,
     } = useIdea();
 
-
-    console.log(info)
     return (
         <>
             {/* <Form method="post" action="/ideas/create"> */}
             <Paper p={'md'} m={'xs'} withBorder shadow="xl" className={classes.leftPanel}>
                 <Stack gap={'sm'}>
-                    
-                        <TextInput
-                            label="Give your date a name!"
-                            placeholder="Date Name"
-                            withAsterisk
-                            value={info.title}
-                            onChange={(e)=>setInfo({...info, title: e.target.value})}
+                    <TextInput
+                        label="Give your date a name!"
+                        placeholder="Date Name"
+                        withAsterisk
+                        value={info.title}
+                        onChange={(e) => setInfo({ ...info, title: e.target.value })}
+                    />
+                    <Flex align="flex-end" gap="xl">
+                        <MultiSelect
+                            variant="filled"
+                            size="xs"
+                            label="Date Tags"
+                            placeholder="Pick Category"
+                            data={[
+                                'Romantic',
+                                'Outdoor',
+                                'Food',
+                                'Sport',
+                                'Dance',
+                                'Cultural',
+                            ]}
+                            searchable
+                            nothingFoundMessage="Nothing found..."
+                            onChange={(values) => setInfo({ ...info, tags: values })}
                         />
-                        <Flex align="flex-end" gap="xl" >
-                            <MultiSelect
-                                variant="filled"
-                                size="xs"
-                                label="Date Tags"
-                                placeholder="Pick Category"
-                                data={[
-                                    'Romantic',
-                                    'Outdoor',
-                                    'Food',
-                                    'Sport',
-                                    'Dance',
-                                    'Cultural',
-                                ]}
-                                searchable
-                                nothingFoundMessage="Nothing found..."
-                                onChange={(values)=>setInfo({...info, tags: values })}
-                            />
 
-                            <Switch
-                                defaultChecked
-                                py={6}
-                                color="pink"
-                                label="Make this date idea public"
-                                size='xs'
-                                onChange={(e)=>setInfo({...info, isPublic: e.target.checked})}
-                            />
-                        </Flex>
-                       
-                   
+                        <Switch
+                            defaultChecked
+                            py={6}
+                            color="pink"
+                            label="Make this date idea public"
+                            size="xs"
+                            onChange={(e) =>
+                                setInfo({ ...info, isPublic: e.target.checked })
+                            }
+                        />
+                    </Flex>
+
                     {activityList.map((activity, idx) => {
                         return !isEditingList[idx] ? (
                             <Paper key={idx} p="xs" shadow="none" withBorder>

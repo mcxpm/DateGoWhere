@@ -1,4 +1,4 @@
-import { addDoc, arrayUnion, collection, doc, getDoc, getDocs, query, setDoc,updateDoc, where } from 'firebase/firestore';
+import { addDoc, arrayUnion, collection, doc, documentId, getDoc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
 
 import { auth, db } from '../config/firebase';
 
@@ -16,8 +16,13 @@ export const getIdea = async (id) => {
 export const getUserIdeas = async (uid) => {
     const userRef = doc(db, 'users', uid);
     const docSnap = await getDoc(userRef);
-    const ideasList = docSnap.data(); 
-    return ideasList
+    if (!docSnap.exists()) {
+        return [];
+    }
+    const ideaIdList = docSnap.data().ideas;
+    const q = query(collection(db, "ideas"), where(documentId(), "in", ideaIdList));
+    const docs = await getDocs(q);
+    return docs.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 }
 
 export const createIdea = async () => {
@@ -26,9 +31,9 @@ export const createIdea = async () => {
             createdBy: auth.currentUser.uid,
             isPublished: false,
             isPublic: true,
-            reviews: [] 
+            reviews: []
         }
-        
+
         const ideaDocRef = await addDoc(collection(db, 'ideas'), idea);
         const ideaDocId = ideaDocRef.id;
         const userDocRef = await doc(db, "users", auth.currentUser.uid)
@@ -41,7 +46,7 @@ export const createIdea = async () => {
             await setDoc(userDocRef, {
                 ideas: [ideaDocId]
             })
-        }    
+        }
         return ideaDocRef;
     }
     catch (e) {

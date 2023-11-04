@@ -13,21 +13,27 @@ import {
 import { Container } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { upperFirst, useToggle } from '@mantine/hooks';
-import { useEffect } from 'react';
 import {
-    useAuthState,
     useCreateUserWithEmailAndPassword,
     useSignInWithEmailAndPassword,
     useSignInWithGoogle,
 } from 'react-firebase-hooks/auth';
-import { useNavigate } from 'react-router-dom';
+import { redirect } from 'react-router-dom';
 
 import { auth } from '../config/firebase';
+import { getUser } from '../utils/AuthUtils';
 import GoogleButton from './GoogleButton';
 
-const AuthenticationForm = (props) => {
-    const [user] = useAuthState(auth);
+// eslint-disable-next-line react-refresh/only-export-components
+export const loader = async () => {
+    const user = await getUser();
+    if (user) {
+        return redirect('/');
+    }
+    return null;
+};
 
+const AuthenticationForm = (props) => {
     const [type, toggle] = useToggle(['login', 'register']);
 
     const [signInWithGoogle] = useSignInWithGoogle(auth);
@@ -46,14 +52,6 @@ const AuthenticationForm = (props) => {
                 val.length <= 6 ? 'Password should include at least 6 characters' : null,
         },
     });
-
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        if (user) {
-            navigate('/', { replace: true });
-        }
-    }, [user]);
 
     return (
         <Container size="xs" px="xs" h={'100dvh'}>
