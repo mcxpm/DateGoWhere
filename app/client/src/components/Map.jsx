@@ -74,7 +74,7 @@ const Map = forwardRef(function Map({ activityList, isViewing }, ref) {
     }, []);
 
     useEffect(() => {
-        if (isViewing) {
+        if (isViewing && activityList.length >= 2) {
             calculateAndDisplayRoute(activityList);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps

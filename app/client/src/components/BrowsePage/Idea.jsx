@@ -37,7 +37,7 @@ const Idea = ({ idea }) => {
                             Perfect for you, if you enjoy
                         </Text>
                         <Group gap={7} mt={5}>
-                            {idea.tags.map((tag) => (
+                            {idea.tags?.map((tag) => (
                                 <Badge variant="light" key={idea.id + tag}>
                                     {tag}
                                 </Badge>
