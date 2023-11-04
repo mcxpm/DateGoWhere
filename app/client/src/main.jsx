@@ -16,6 +16,7 @@ import BrowsePage, {
 import CreateIdea, {
     loader as createIdeaLoader,
 } from './components/CreateIdea/CreateIdea';
+import { ForgotPassword } from './components/ForgotPassword';
 import HeroPage from './components/HeroPage/HeroPage';
 import TwoPanelLayout from './components/TwoPanelLayout';
 import ViewIdeas, { loader as userIdeasLoader } from './components/UserIdeas/ViewIdeas';
@@ -31,9 +32,16 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         children: [
             {
-                path: 'auth',
-                loader: AuthLoader,
-                element: <AuthenticationForm />,
+                path: 'auth/*',
+                element: <Outlet />,
+                children: [
+                    { index: true, loader: AuthLoader, element: <AuthenticationForm /> },
+                    {
+                        path: 'forgot-password',
+                        element: <ForgotPassword />,
+                    },
+                ],
+                //^^this is me trying something psps i think it doesnt redirect to home aft login
             },
             {
                 path: 'ideas',
@@ -93,6 +101,10 @@ const router = createBrowserRouter([
                 path: ':id/ideas',
                 loader: userIdeasLoader,
                 element: <ViewIdeas />,
+            },
+            {
+                path: '/auth/forgot-password',
+                element: <ForgotPassword />,
             },
         ],
     },
