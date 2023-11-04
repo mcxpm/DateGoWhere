@@ -1,14 +1,14 @@
 import { Button, Group, Textarea } from '@mantine/core';
 import { isNotEmpty, useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { useParams } from 'react-router-dom';
 
-import useAuth from '../../hooks/use-auth';
 import { createReport } from '../../utils/IdeaUtils';
 
-const CreateReport= () => {
+const CreateReport = () => {
     const { id: ideaId } = useParams();
-    const { user, loading } = useAuth();
+    const { user, loading } = useAuthState();
 
     const form = useForm({
         initialValues: {
