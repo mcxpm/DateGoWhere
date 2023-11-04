@@ -1,10 +1,9 @@
-import { Box } from '@mantine/core';
+import { Box, Grid, Text } from '@mantine/core';
 import { useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
 
 import { getIdeas } from '../../utils/IdeaUtils';
-import classes from './BrowsePage.module.css';
-import ListIdeas from './ListIdeas';
+import Idea from './Idea';
 import SearchBar from './SearchBar';
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -14,15 +13,26 @@ export async function loader() {
 
 export default function BrowsePage() {
     const ideas = useLoaderData();
-    //const [posts, setPosts] = useState(ideas);
-    const [searchResults, setSearchResults] = useState(ideas);
+    const [filteredIdeas, setFilteredIdeas] = useState(ideas);
 
     return (
         <Box p={'xl'}>
-            <SearchBar posts={ideas} setSearchResults={setSearchResults} />
-            <Box className={classes.cardContainer}>
-                <ListIdeas searchResults={searchResults} />
-            </Box>
+            <Grid>
+                <Grid.Col span={{ base: 12 }}>
+                    <SearchBar ideas={ideas} setFilteredIdeas={setFilteredIdeas} />
+                </Grid.Col>
+                {filteredIdeas.length ? (
+                    filteredIdeas.map((idea) => (
+                        <Grid.Col key={idea.id} span={{ base: 12, md: 6 }}>
+                            <Idea idea={idea} />
+                        </Grid.Col>
+                    ))
+                ) : (
+                    <Grid.Col span={{ base: 12 }}>
+                        <Text>Sorry, No date ideas match your search</Text>
+                    </Grid.Col>
+                )}
+            </Grid>
         </Box>
     );
 }

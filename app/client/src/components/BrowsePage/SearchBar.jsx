@@ -1,23 +1,23 @@
 import { TextInput } from '@mantine/core';
-import { PiMagnifyingGlassBold } from 'react-icons/pi';
-const SearchBar = ({ posts, setSearchResults }) => {
+import { MdSearch } from 'react-icons/md';
+const SearchBar = ({ ideas, setFilteredIdeas }) => {
     const handleSearchChange = (e) => {
-        const upperSearch = e.target.value.toLowerCase();
-        if (!upperSearch) return setSearchResults(posts);
-        const resultsArray = posts.filter(
-            (post) =>
-                post.title.toLowerCase().includes(upperSearch) ||
-                post.country.toLowerCase().includes(upperSearch) ||
-                post.description.toLowerCase().includes(upperSearch),
+        const query = e.target.value.toLowerCase();
+        if (!query) return setFilteredIdeas(ideas);
+        const filteredIdeas = ideas.filter(
+            (idea) =>
+                idea.title.toLowerCase().includes(query) ||
+                idea.description?.toLowerCase().includes(query) ||
+                idea.tags?.map((tag) => tag.toLowerCase()).includes(query),
         );
-        setSearchResults(resultsArray);
+        setFilteredIdeas(filteredIdeas);
     };
 
     return (
         <TextInput
             label="Search by keywords"
             placeholder="North, South, Park, etc."
-            leftSection={<PiMagnifyingGlassBold />}
+            leftSection={<MdSearch />}
             onChange={handleSearchChange}
             size="md"
         />
