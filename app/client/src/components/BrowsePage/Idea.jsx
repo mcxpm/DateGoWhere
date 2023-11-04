@@ -1,23 +1,9 @@
-import {
-    ActionIcon,
-    // Badge,
-    Button,
-    Card,
-    Group,
-    Image,
-    Text,
-} from '@mantine/core';
+import { ActionIcon, Badge, Button, Card, Group, Image, Text } from '@mantine/core';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 
 import classes from './BrowsePage.module.css';
 const Idea = ({ idea }) => {
-    // const features = idea.badges.map((badge) => (
-    //     <Badge variant="light" key={badge.label + idea.title} leftSection={badge.emoji}>
-    //         {badge.label}
-    //     </Badge>
-    // ));
-
     const navigate = useNavigate();
 
     return (
@@ -50,9 +36,13 @@ const Idea = ({ idea }) => {
                         <Text mt="md" className={classes.label} c="dimmed">
                             Perfect for you, if you enjoy
                         </Text>
-                        {/* <Group gap={7} mt={5}>
-                        {features}
-                    </Group> */}
+                        <Group gap={7} mt={5}>
+                            {idea.tags?.map((tag) => (
+                                <Badge variant="light" key={idea.id + tag}>
+                                    {tag}
+                                </Badge>
+                            ))}
+                        </Group>
                     </Card.Section>
 
                     <Group mt="xs">
