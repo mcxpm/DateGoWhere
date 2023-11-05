@@ -1,56 +1,57 @@
-import {
-    Button,
-    Container,
-    Grid,
-    GridCol,
-    Image,
-    Overlay,
-    Text,
-    Title,
-} from '@mantine/core';
-import { Link } from 'react-router-dom';
+import { Box, Button, Center, Grid, Image, Overlay, Text } from '@mantine/core';
+import { useNavigate } from 'react-router-dom';
 
-import datepic from '/images/datepic.png'
+import HeroImage from '/images/hero-image.png';
 
 import classes from './HeroPage.module.css';
 
-
 export default function HeroPage() {
+    const navigate = useNavigate();
     return (
-        <div className={classes.hero}>
+        <Box h={'100dvh'}>
             <Overlay
                 gradient="linear-gradient(90deg, rgba(255, 240, 246, 1) 30%, rgba(0, 0, 0, 0) 90%)"
                 opacity={1}
-                zIndex={0}
+                zIndex={-1}
                 h={'100%'}
             />
-            <Grid className={classes.container} justify='center' align='center'>
-                <GridCol span={6} p={80}>
-                    
-                       <Image
-                        radius="md"
-                        h={400}
-                        w="auto"
-                        src={datepic}
-                    />   
-                </GridCol>
-                <GridCol span={6} size="lg">
-                    <Title className={classes.title}>DateGoWhere</Title>
-                    <Text className={classes.description} mt="xl">
-                        Date Ideas by Singaporeans for Singaporeans
-                    </Text>
+            <Center h={'100%'}>
+                <Grid justify="center" align="center" p={'xl'}>
+                    <Grid.Col span={{ base: 12, md: 6 }} className={classes.image}>
+                        <Image radius="md" maw={'24rem'} mx={'auto'} src={HeroImage} />
+                    </Grid.Col>
+                    <Grid.Col span={{ base: 12, md: 6 }}>
+                        <Box maw={'30rem'} mx={'auto'}>
+                            <Text
+                                fz={'3rem'}
+                                fw={'bolder'}
+                                variant="gradient"
+                                gradient={{ from: 'pink', to: 'red', deg: 45 }}
+                            >
+                                DateGoWhere
+                            </Text>
+                            <Text mt="xl" fw={'bold'}>
+                                Date Ideas by Singaporeans for Singaporeans
+                            </Text>
 
-                    <Text className={classes.description2} mt="xl">
-                        Upload your own date ideas to share with others, or choose from
-                        many date ideas. Your dates will never be boring ever again!
-                    </Text>
-                    <Link to="/ideas/browse">
-                        <Button color="pink" size="xl" className={classes.control}>
-                            Browse Ideas
-                        </Button>
-                    </Link>
-                </GridCol>
-            </Grid>
-        </div>
+                            <Text mt="xl">
+                                Upload your own date ideas to share with others, or choose
+                                from many date ideas. Your dates will never be boring ever
+                                again!
+                            </Text>
+
+                            <Button
+                                mt={'xl'}
+                                color="pink"
+                                size="md"
+                                onClick={() => navigate('/ideas/browse')}
+                            >
+                                Browse Ideas
+                            </Button>
+                        </Box>
+                    </Grid.Col>
+                </Grid>
+            </Center>
+        </Box>
     );
 }
