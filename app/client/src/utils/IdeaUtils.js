@@ -1,4 +1,4 @@
-import { addDoc, arrayUnion, collection, doc, documentId, getDoc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
+import { addDoc, arrayRemove, arrayUnion, collection, deleteDoc, doc, documentId, getDoc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
 
 import { auth, db } from '../config/firebase';
 
@@ -28,6 +28,9 @@ export const getUserIdeas = async (uid) => {
         return [];
     }
     const ideaIdList = docSnap.data().ideas;
+    if (!ideaIdList || !ideaIdList.length) {
+        return []
+    }
     const q = query(collection(db, "ideas"), where(documentId(), "in", ideaIdList));
     const docs = await getDocs(q);
     return docs.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
@@ -67,7 +70,13 @@ export const updateIdea = async (ideaRef, newIdea) => {
     return await updateDoc(ideaRef, newIdea)
 };
 
-export const deleteIdea = async () => { };
+export const deleteIdea = async (id) => {
+    const userDocRef = doc(db, "users", auth.currentUser.uid)
+    const deleteIdeaIdFromUser = updateDoc(userDocRef, { ideas: arrayRemove(id) })
+    const ideaRef = doc(db, 'ideas', id);
+    const deleteIdeaDoc = deleteDoc(ideaRef)
+    return Promise.all([deleteIdeaDoc, deleteIdeaIdFromUser])
+};
 
 export const createReview = async (id, review) => {
     console.log(id, review)

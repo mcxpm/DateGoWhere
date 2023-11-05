@@ -2,6 +2,7 @@ import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 
 import { createTheme, MantineProvider } from '@mantine/core';
+import { ModalsProvider } from '@mantine/modals';
 import { Notifications, notifications } from '@mantine/notifications';
 import React from 'react';
 import ReactDOM from 'react-dom/client';
@@ -117,8 +118,10 @@ const theme = createTheme({
 ReactDOM.createRoot(document.getElementById('root')).render(
     <React.StrictMode>
         <MantineProvider withGlobalStyles withNormalizeCSS theme={theme}>
-            <RouterProvider router={router} />
-            <Notifications />
+            <ModalsProvider>
+                <RouterProvider router={router} />
+                <Notifications />
+            </ModalsProvider>
         </MantineProvider>
     </React.StrictMode>,
 );

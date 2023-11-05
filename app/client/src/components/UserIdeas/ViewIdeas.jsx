@@ -1,10 +1,11 @@
-import { Button, Container, Group, Table } from '@mantine/core';
+import { Button, Code, Container, Group, Table, Text } from '@mantine/core';
+import { modals } from '@mantine/modals';
 import { notifications } from '@mantine/notifications';
-import { redirect, useLoaderData } from 'react-router-dom';
+import { redirect, useLoaderData, useRevalidator } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 import { getUser } from '../../utils/AuthUtils';
-import { getUserIdeas } from '../../utils/IdeaUtils';
+import { deleteIdea, getUserIdeas } from '../../utils/IdeaUtils';
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const loader = async ({ params }) => {
@@ -33,6 +34,32 @@ export const loader = async ({ params }) => {
 const ViewIdeas = () => {
     const ideas = useLoaderData();
     const navigate = useNavigate();
+    const revalidator = useRevalidator();
+
+    const openDeleteModal = (id) =>
+        modals.openConfirmModal({
+            title: 'Delete idea',
+            centered: true,
+            children: (
+                <Text size="sm">
+                    Are you sure you want to delete idea: <Code>{id}</Code>? You cannot
+                    undo this action.
+                </Text>
+            ),
+            labels: { confirm: 'Delete idea', cancel: "No don't delete it" },
+            confirmProps: { color: 'red' },
+            onCancel: () => {},
+            onConfirm: () =>
+                deleteIdea(id).then(() => {
+                    notifications.show({
+                        color: 'Green',
+                        title: 'Deletion success',
+                        message: `Your date idea has been deleted successfully`,
+                        autoClose: 2000,
+                    });
+                    revalidator.revalidate();
+                }),
+        });
 
     return (
         <Container py={'lg'}>
@@ -106,6 +133,7 @@ const ViewIdeas = () => {
                                                 size="xs"
                                                 variant="filled"
                                                 color="red"
+                                                onClick={() => openDeleteModal(idea.id)}
                                             >
                                                 Delete
                                             </Button>
