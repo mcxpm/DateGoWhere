@@ -10,8 +10,16 @@ export const getIdeas = async () => {
 
 export const getIdea = async (id) => {
     const ideaRef = doc(db, "ideas", id)
-    return await getDoc(ideaRef);
+    const docSnap = await getDoc(ideaRef);
+    if (!docSnap.exists()) {
+        return null;
+    }
+    return docSnap.data()
 };
+
+export const getIdeaRefFromId = async (id) => {
+    return doc(db, 'ideas', id);
+}
 
 export const getUserIdeas = async (uid) => {
     const userRef = doc(db, 'users', uid);
@@ -36,7 +44,7 @@ export const createIdea = async () => {
 
         const ideaDocRef = await addDoc(collection(db, 'ideas'), idea);
         const ideaDocId = ideaDocRef.id;
-        const userDocRef = await doc(db, "users", auth.currentUser.uid)
+        const userDocRef = doc(db, "users", auth.currentUser.uid)
         const userSnap = await getDoc(userDocRef);
         if (userSnap.exists()) {
             await updateDoc(userDocRef, {

@@ -12,8 +12,8 @@ import {
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { auth } from '../config/firebase';
+import { UserTab } from './Auth/UserTab';
 import classes from './NavBar.module.css';
-import { UserTab } from './UserTab';
 
 const data = [
     { link: '/', label: 'Home', icon: MdHome },

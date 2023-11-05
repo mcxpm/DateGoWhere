@@ -2,9 +2,9 @@ import { notifications } from '@mantine/notifications';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { createIdea, updateIdea } from '../utils/IdeaUtils';
+import { createIdea, getIdeaRefFromId, updateIdea } from '../utils/IdeaUtils';
 
-const useIdea = () => {
+const useIdea = (idea, id) => {
     const navigate = useNavigate();
 
     const emptyActivity = {
@@ -21,20 +21,34 @@ const useIdea = () => {
     };
 
     const [ideaRef, setIdeaRef] = useState(null);
-    const [info, setInfo] = useState({
-        title: "",
-        isPublic: true,
-        tags: [],
-    });
-    const [activityList, setActivityList] = useState([]);
-    const [isEditingList, setIsEditingList] = useState([]);
+    const [info, setInfo] = useState(
+        idea
+            ? {
+                  title: idea.title,
+                  isPublic: idea.isPublic,
+                  tags: idea.tags,
+              }
+            : {
+                  title: '',
+                  isPublic: true,
+                  tags: [],
+              },
+    );
+    const [activityList, setActivityList] = useState(idea ? idea.activities : []);
+    const [isEditingList, setIsEditingList] = useState(
+        idea ? new Array(idea.activities.length).fill(false) : [],
+    );
 
     const getIdeaRef = async () => {
         if (ideaRef) {
             return ideaRef;
         }
+        if (id) {
+            const newIdeaRef = await getIdeaRefFromId(id);
+            setIdeaRef(newIdeaRef);
+            return newIdeaRef;
+        }
         const newIdeaRef = await createIdea();
-        console.log(newIdeaRef);
         setIdeaRef(newIdeaRef);
         return newIdeaRef;
     };
@@ -156,16 +170,18 @@ const useIdea = () => {
                 notifications.show({
                     color: 'green',
                     title: 'Success',
-                    message: 'Your date idea has been published successfully',
+                    message: `Your date idea has been ${
+                        idea ? 'updated' : 'published'
+                    } successfully`,
                     autoClose: 2000,
                 });
-                navigate('/ideas/view/' + newIdeaRef.id, { replace: true });
+                navigate(`/ideas/${newIdeaRef.id}/view`, { replace: true });
             });
         } catch (e) {
             console.log('Error submitting idea: ', e);
             notifications.show({
                 color: 'red',
-                title: 'Error publishing date idea',
+                title: `Error ${idea ? 'updating' : 'publishing'} date idea`,
                 message: 'Please try again',
                 autoClose: 2000,
             });

@@ -53,7 +53,7 @@ const ViewIdeas = () => {
                             return (
                                 <Table.Tr
                                     key={idea.id}
-                                    bg={idea.isPublished ? 'white' : 'lightgray'}
+                                    bg={idea.isPublished ? 'white' : 'gray.0'}
                                 >
                                     <Table.Td style={{ fontWeight: 'bold' }}>
                                         {idea.title}

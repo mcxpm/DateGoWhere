@@ -9,14 +9,15 @@ import { createBrowserRouter, Outlet, redirect, RouterProvider } from 'react-rou
 
 import AuthenticationForm, {
     loader as AuthLoader,
-} from './components/AuthenticationForm';
+} from './components/Auth/AuthenticationForm';
+import { ForgotPassword } from './components/Auth/ForgotPassword';
 import BrowsePage, {
     loader as browsePageLoader,
 } from './components/BrowsePage/BrowsePage';
 import CreateIdea, {
     loader as createIdeaLoader,
 } from './components/CreateIdea/CreateIdea';
-import { ForgotPassword } from './components/ForgotPassword';
+import EditIdea, { loader as editIdeaLoader } from './components/Edit/EditIdea';
 import HeroPage from './components/HeroPage/HeroPage';
 import TwoPanelLayout from './components/TwoPanelLayout';
 import ViewIdeas, { loader as userIdeasLoader } from './components/UserIdeas/ViewIdeas';
@@ -66,7 +67,8 @@ const router = createBrowserRouter([
                             },
                             {
                                 path: ':id/edit',
-                                element: <div>edit</div>,
+                                loader: editIdeaLoader,
+                                element: <EditIdea />,
                             },
                         ],
                     },

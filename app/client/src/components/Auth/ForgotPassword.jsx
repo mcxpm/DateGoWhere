@@ -15,7 +15,7 @@ import { useSendPasswordResetEmail } from 'react-firebase-hooks/auth';
 import { MdArrowBack } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
-import { auth } from '../config/firebase';
+import { auth } from '../../config/firebase';
 
 export function ForgotPassword() {
     const [sendPasswordResetEmail, loading, error] = useSendPasswordResetEmail(auth);

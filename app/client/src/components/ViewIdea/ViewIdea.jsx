@@ -12,6 +12,7 @@ import {
     Text,
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import { useRef, useState } from 'react';
 import { MdOutlineReportProblem } from 'react-icons/md';
 import { useLoaderData } from 'react-router-dom';
@@ -26,13 +27,21 @@ import classes from './ViewIdea.module.css';
 
 // eslint-disable-next-line react-refresh/only-export-components
 export async function loader({ params }) {
-    return await getIdea(params.id);
+    const idea = await getIdea(params.id);
+    if (idea == null) {
+        notifications.show({
+            color: 'red',
+            title: 'Error fetching idea',
+            message: 'The idea you requested does not exist.',
+            autoClose: 2000,
+        });
+        throw new Response('Not Found', { status: 404 });
+    }
+    return idea;
 }
 
 const ViewIdea = () => {
-    const ideaRef = useLoaderData();
-    const idea = ideaRef.data();
-    console.log(idea);
+    const idea = useLoaderData();
 
     const [reviewsOpened, { open, close }] = useDisclosure(false);
     const [reportOpened, reportHandlers] = useDisclosure(false);
@@ -42,8 +51,6 @@ const ViewIdea = () => {
     const toggleView = () => {
         setIsAddingReview((prev) => !prev);
     };
-
-    console.log(reportOpened);
 
     const ref = useRef(null);
 

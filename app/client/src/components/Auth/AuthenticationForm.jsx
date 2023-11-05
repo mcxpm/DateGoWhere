@@ -22,8 +22,8 @@ import {
 } from 'react-firebase-hooks/auth';
 import { redirect, useNavigate, useRevalidator } from 'react-router-dom';
 
-import { auth } from '../config/firebase';
-import { getUser } from '../utils/AuthUtils';
+import { auth } from '../../config/firebase';
+import { getUser } from '../../utils/AuthUtils';
 import GoogleButton from './GoogleButton';
 
 // eslint-disable-next-line react-refresh/only-export-components

@@ -1,4 +1,5 @@
 import {
+    Badge,
     Box,
     Button,
     Divider,
@@ -13,17 +14,18 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { useRef } from 'react';
-import { MdAdd, MdEdit, MdSave, MdUpload } from 'react-icons/md';
-import { redirect } from 'react-router-dom';
+import { MdAdd, MdEdit, MdSave, MdUpload, MdVisibility } from 'react-icons/md';
+import { redirect, useLoaderData, useNavigate, useParams } from 'react-router-dom';
 
 import useIdea from '../../hooks/use-idea';
 import { getUser } from '../../utils/AuthUtils';
+import { getIdea } from '../../utils/IdeaUtils';
+import ActivityForm from '../CreateIdea/ActivityForm';
+import classes from '../CreateIdea/CreateIdea.module.css';
 import Map from '../Map';
-import ActivityForm from './ActivityForm';
-import classes from './CreateIdea.module.css';
 
 // eslint-disable-next-line react-refresh/only-export-components
-export async function loader() {
+export async function loader({ params }) {
     const user = await getUser();
     if (user == null) {
         notifications.show({
@@ -34,10 +36,32 @@ export async function loader() {
         });
         return redirect('/auth');
     }
-    return null;
+    const idea = await getIdea(params.id);
+    if (idea == null) {
+        notifications.show({
+            color: 'red',
+            title: 'Error fetching idea',
+            message: 'The idea you requested does not exist.',
+            autoClose: 2000,
+        });
+        throw new Response('Not Found', { status: 404 });
+    }
+    if (user.uid != idea.createdBy) {
+        notifications.show({
+            color: 'red',
+            title: 'User not authorised',
+            message: 'You do not have permissions to edit this idea.',
+            autoClose: 2000,
+        });
+        return redirect(`/ideas/${params.id}/view`);
+    }
+    return idea;
 }
 
-const CreateIdea = () => {
+const EditIdea = () => {
+    const idea = useLoaderData();
+    const { id } = useParams();
+    const navigate = useNavigate();
     const ref = useRef(null);
 
     const {
@@ -51,7 +75,7 @@ const CreateIdea = () => {
         handleDiscardActivity,
         handleSubmit,
         handleSaveDraft,
-    } = useIdea();
+    } = useIdea(idea, id);
 
     return (
         <>
@@ -90,7 +114,7 @@ const CreateIdea = () => {
                             color="pink"
                             label="Make this date idea public"
                             size="xs"
-                            value={info.isPublic}
+                            checked={info.isPublic}
                             onChange={(e) =>
                                 setInfo({ ...info, isPublic: e.target.checked })
                             }
@@ -144,13 +168,12 @@ const CreateIdea = () => {
                 <Box>
                     <Divider my={'sm'} />
                     <Group justify="space-between">
-                        <Button
-                            variant="light"
-                            leftSection={<MdSave />}
-                            onClick={handleSaveDraft}
+                        <Badge
+                            variant="dot"
+                            color={idea.isPublished ? 'green' : 'orange'}
                         >
-                            Save Draft
-                        </Button>
+                            {idea.isPublished ? 'Published' : ' Draft'}
+                        </Badge>
                         <Button
                             variant="outline"
                             color="gray"
@@ -160,9 +183,25 @@ const CreateIdea = () => {
                         >
                             Get Route
                         </Button>
-                        <Button rightSection={<MdUpload />} onClick={handleSubmit}>
-                            Submit
+                        <Button
+                            leftSection={<MdSave />}
+                            variant="light"
+                            onClick={handleSaveDraft}
+                        >
+                            Save
                         </Button>
+                        {idea.isPublished ? (
+                            <Button
+                                leftSection={<MdVisibility />}
+                                onClick={() => navigate(`/ideas/${id}/view`)}
+                            >
+                                View
+                            </Button>
+                        ) : (
+                            <Button rightSection={<MdUpload />} onClick={handleSubmit}>
+                                Save and publish
+                            </Button>
+                        )}
                     </Group>
                 </Box>
             </Paper>
@@ -171,4 +210,4 @@ const CreateIdea = () => {
     );
 };
 
-export default CreateIdea;
+export default EditIdea;
