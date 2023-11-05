@@ -3,6 +3,7 @@ import {
     Box,
     Button,
     Divider,
+    Flex,
     Group,
     Paper,
     PasswordInput,
@@ -18,7 +19,7 @@ import {
     useSignInWithEmailAndPassword,
     useSignInWithGoogle,
 } from 'react-firebase-hooks/auth';
-import { redirect } from 'react-router-dom';
+import { redirect, useNavigate } from 'react-router-dom';
 
 import { auth } from '../config/firebase';
 import { getUser } from '../utils/AuthUtils';
@@ -34,6 +35,7 @@ export const loader = async () => {
 };
 
 const AuthenticationForm = (props) => {
+    const navigate = useNavigate();
     const [type, toggle] = useToggle(['login', 'register']);
 
     const [signInWithGoogle] = useSignInWithGoogle(auth);
@@ -124,19 +126,33 @@ const AuthenticationForm = (props) => {
                                 radius="md"
                             />
                         </Stack>
-
                         <Group justify="space-between" mt="xl">
-                            <Anchor
-                                component="button"
-                                type="button"
-                                color="dimmed"
-                                onClick={() => toggle()}
-                                size="xs"
+                            <Flex
+                                direction={{ base: 'column' }}
+                                align="flex-start"
+                                gap="0.5rem"
                             >
-                                {type === 'register'
-                                    ? 'Already have an account? Login'
-                                    : "Don't have an account? Register"}
-                            </Anchor>
+                                <Anchor
+                                    component="button"
+                                    type="button"
+                                    color="dimmed"
+                                    onClick={() => toggle()}
+                                    size="xs"
+                                >
+                                    {type === 'register'
+                                        ? 'Already have an account? Login'
+                                        : "Don't have an account? Register"}
+                                </Anchor>
+                                <Anchor
+                                    component="button"
+                                    type="button"
+                                    color="dimmed"
+                                    size="xs"
+                                    onClick={() => {navigate('/auth/forgot-password')}}
+                                >
+                                    {type === 'login' ? 'Forgot Password?' : ''}
+                                </Anchor>
+                            </Flex>
                             <Button type="submit" radius="md">
                                 {upperFirst(type)}
                             </Button>
