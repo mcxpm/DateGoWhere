@@ -17,8 +17,8 @@ const Idea = ({ idea }) => {
     return (
         <Card withBorder>
             <Card.Section bg={'gray.1'}>
-                {idea.thumbnail ? (
-                    <Image src={idea.thumbnail} alt={idea.title} h={'10rem'} />
+                {idea.image ? (
+                    <Image src={idea.image} alt={idea.title} h={'10rem'} />
                 ) : (
                     <Center h={'10rem'} px={'lg'}>
                         <Text

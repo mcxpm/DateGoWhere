@@ -62,7 +62,37 @@ const CreateIdea = () => {
                         placeholder="Date Name"
                         withAsterisk
                         value={info.title}
-                        onChange={(e) => setInfo({ ...info, title: e.target.value })}
+                        size="xs"
+                        onChange={(e) =>
+                            setInfo((prevInfo) => ({
+                                ...prevInfo,
+                                title: e.target.value,
+                            }))
+                        }
+                    />
+                    <TextInput
+                        label="Description"
+                        placeholder="Description"
+                        value={info.description}
+                        size="xs"
+                        onChange={(e) =>
+                            setInfo((prevInfo) => ({
+                                ...prevInfo,
+                                description: e.target.value,
+                            }))
+                        }
+                    />
+                    <TextInput
+                        label="Thumbail Image URL"
+                        placeholder="URL"
+                        value={info.image}
+                        size="xs"
+                        onChange={(e) =>
+                            setInfo((prevInfo) => ({
+                                ...prevInfo,
+                                image: e.target.value,
+                            }))
+                        }
                     />
                     <Flex align="flex-end" gap="xl">
                         <MultiSelect
@@ -81,7 +111,9 @@ const CreateIdea = () => {
                             searchable
                             nothingFoundMessage="Nothing found..."
                             value={info.tags}
-                            onChange={(values) => setInfo({ ...info, tags: values })}
+                            onChange={(values) =>
+                                setInfo((prevInfo) => ({ ...prevInfo, tags: values }))
+                            }
                         />
 
                         <Switch
@@ -90,9 +122,12 @@ const CreateIdea = () => {
                             color="pink"
                             label="Make this date idea public"
                             size="xs"
-                            value={info.isPublic}
+                            checked={info.isPublic}
                             onChange={(e) =>
-                                setInfo({ ...info, isPublic: e.target.checked })
+                                setInfo((prevInfo) => ({
+                                    ...prevInfo,
+                                    isPublic: e.target.checked,
+                                }))
                             }
                         />
                     </Flex>

@@ -23,7 +23,7 @@ export default function BrowsePage() {
                 </Grid.Col>
                 {filteredIdeas.length ? (
                     filteredIdeas.map((idea) => (
-                        <Grid.Col key={idea.id} span={{ base: 12, md: 6 }}>
+                        <Grid.Col key={idea.id} span={{ base: 12, sm: 6, md: 4 }}>
                             <Idea idea={idea} />
                         </Grid.Col>
                     ))

@@ -25,12 +25,18 @@ const useIdea = (idea, id) => {
         idea
             ? {
                   title: idea.title,
+                  description: idea.description,
+                  image: idea.image,
                   isPublic: idea.isPublic,
+                  isPublished: idea.isPublished,
                   tags: idea.tags,
               }
             : {
                   title: '',
+                  description: '',
+                  image: '',
                   isPublic: true,
+                  isPublished: false,
                   tags: [],
               },
     );
@@ -114,9 +120,7 @@ const useIdea = (idea, id) => {
         }
         try {
             updateIdea(newIdeaRef, {
-                title: info.title,
-                tags: info.tags,
-                isPublic: info.isPublic,
+                ...info,
                 activities: activityList.map((obj) => {
                     return Object.assign({}, obj);
                 }),
@@ -159,9 +163,7 @@ const useIdea = (idea, id) => {
         }
         try {
             updateIdea(newIdeaRef, {
-                title: info.title,
-                tags: info.tags,
-                isPublic: info.isPublic,
+                ...info,
                 activities: activityList.map((obj) => {
                     return Object.assign({}, obj);
                 }),
