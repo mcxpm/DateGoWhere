@@ -1,6 +1,6 @@
 import { Button, Container, Group, Table } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { redirect, useLoaderData, useLocation } from 'react-router-dom';
+import { redirect, useLoaderData } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 import { getUser } from '../../utils/AuthUtils';
@@ -32,7 +32,6 @@ export const loader = async ({ params }) => {
 
 const ViewIdeas = () => {
     const ideas = useLoaderData();
-    const location = useLocation();
     const navigate = useNavigate();
 
     return (
@@ -70,16 +69,18 @@ const ViewIdeas = () => {
                                             <Button
                                                 size="xs"
                                                 variant="outline"
-                                                onClick={() => {
-                                                    navigate(`/ideas/view/${idea.id}`);
-                                                }}
+                                                onClick={() =>
+                                                    navigate(`/ideas/${idea.id}/view`)
+                                                }
                                             >
                                                 View
                                             </Button>
                                             <Button
                                                 size="xs"
                                                 variant="outline"
-                                                /*onClick={() => {navigate(`/ideas/view/${obj.id}`);}}*/
+                                                onClick={() =>
+                                                    navigate(`/ideas/${idea.id}/edit`)
+                                                }
                                             >
                                                 Edit
                                             </Button>
@@ -88,13 +89,9 @@ const ViewIdeas = () => {
                                                 variant="outline"
                                                 color="gray"
                                                 onClick={() => {
-                                                    console.log(
-                                                        window.location.origin +
-                                                            `/ideas/view/${idea.id}`,
-                                                    );
                                                     navigator.clipboard.writeText(
                                                         window.location.origin +
-                                                            `/ideas/view/${idea.id}`,
+                                                            `/ideas/${idea.id}/view`,
                                                     );
                                                     notifications.show({
                                                         color: 'green',

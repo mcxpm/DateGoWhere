@@ -14,12 +14,13 @@ import {
 import { Container } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { upperFirst, useToggle } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import {
     useCreateUserWithEmailAndPassword,
     useSignInWithEmailAndPassword,
     useSignInWithGoogle,
 } from 'react-firebase-hooks/auth';
-import { redirect, useNavigate } from 'react-router-dom';
+import { redirect, useNavigate, useRevalidator } from 'react-router-dom';
 
 import { auth } from '../config/firebase';
 import { getUser } from '../utils/AuthUtils';
@@ -36,6 +37,7 @@ export const loader = async () => {
 
 const AuthenticationForm = (props) => {
     const navigate = useNavigate();
+    const revalidator = useRevalidator();
     const [type, toggle] = useToggle(['login', 'register']);
 
     const [signInWithGoogle] = useSignInWithGoogle(auth);
@@ -67,7 +69,17 @@ const AuthenticationForm = (props) => {
                         <GoogleButton
                             radius="xl"
                             onClick={() => {
-                                signInWithGoogle();
+                                signInWithGoogle()
+                                    .then(() => revalidator.revalidate())
+                                    .catch(() => {
+                                        notifications.show({
+                                            color: 'red',
+                                            title: 'Error signing in',
+                                            message:
+                                                'Please check your credentials and try again',
+                                            autoClose: 2000,
+                                        });
+                                    });
                             }}
                         >
                             Google
@@ -86,7 +98,19 @@ const AuthenticationForm = (props) => {
                                 signInWithEmailAndPassword(
                                     form.values.email,
                                     form.values.password,
-                                );
+                                ).then((res) => {
+                                    if (res) {
+                                        revalidator.revalidate();
+                                    } else {
+                                        notifications.show({
+                                            color: 'red',
+                                            title: 'Error signing in',
+                                            message:
+                                                'Please check your credentials and try again',
+                                            autoClose: 2000,
+                                        });
+                                    }
+                                });
                             } else {
                                 createUserWithEmailAndPassword(
                                     form.values.email,
@@ -135,7 +159,6 @@ const AuthenticationForm = (props) => {
                                 <Anchor
                                     component="button"
                                     type="button"
-                                    color="dimmed"
                                     onClick={() => toggle()}
                                     size="xs"
                                 >
@@ -146,9 +169,10 @@ const AuthenticationForm = (props) => {
                                 <Anchor
                                     component="button"
                                     type="button"
-                                    color="dimmed"
                                     size="xs"
-                                    onClick={() => {navigate('/auth/forgot-password')}}
+                                    onClick={() => {
+                                        navigate('/auth/forgot-password');
+                                    }}
                                 >
                                     {type === 'login' ? 'Forgot Password?' : ''}
                                 </Anchor>

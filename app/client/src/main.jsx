@@ -21,9 +21,9 @@ import HeroPage from './components/HeroPage/HeroPage';
 import TwoPanelLayout from './components/TwoPanelLayout';
 import ViewIdeas, { loader as userIdeasLoader } from './components/UserIdeas/ViewIdeas';
 import ViewIdea, { loader as viewIdeaLoader } from './components/ViewIdea/ViewIdea';
-import { auth } from './config/firebase';
 import ErrorPage from './ErrorPage';
 import Layout from './Layout';
+import { getUser } from './utils/AuthUtils';
 
 const router = createBrowserRouter([
     {
@@ -32,7 +32,11 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         children: [
             {
-                path: 'auth/*',
+                index: true,
+                element: <HeroPage />,
+            },
+            {
+                path: 'auth',
                 element: <Outlet />,
                 children: [
                     { index: true, loader: AuthLoader, element: <AuthenticationForm /> },
@@ -41,7 +45,6 @@ const router = createBrowserRouter([
                         element: <ForgotPassword />,
                     },
                 ],
-                //^^this is me trying something psps i think it doesnt redirect to home aft login
             },
             {
                 path: 'ideas',
@@ -58,11 +61,11 @@ const router = createBrowserRouter([
                             },
                             {
                                 loader: viewIdeaLoader,
-                                path: 'view/:id',
+                                path: ':id/view',
                                 element: <ViewIdea />,
                             },
                             {
-                                path: 'edit/:id',
+                                path: ':id/edit',
                                 element: <div>edit</div>,
                             },
                         ],
@@ -76,35 +79,30 @@ const router = createBrowserRouter([
             },
             {
                 path: 'users',
-                element: <div>users</div>,
-            },
-            {
-                index: true,
-                element: <HeroPage />,
-            },
-            {
-                path: 'user/ideas',
-                loader: () => {
-                    if (auth.currentUser == null) {
-                        notifications.show({
-                            color: 'red',
-                            title: 'User not authenticated',
-                            message: 'Please sign in.',
-                            autoClose: 2000,
-                        });
-                        return redirect('/auth');
-                    }
-                    return redirect(`/${auth.currentUser.uid}/ideas`);
-                },
-            },
-            {
-                path: ':id/ideas',
-                loader: userIdeasLoader,
-                element: <ViewIdeas />,
-            },
-            {
-                path: '/auth/forgot-password',
-                element: <ForgotPassword />,
+                element: <Outlet />,
+                children: [
+                    {
+                        path: 'current/ideas',
+                        loader: async () => {
+                            const user = await getUser();
+                            if (user == null) {
+                                notifications.show({
+                                    color: 'red',
+                                    title: 'User not authenticated',
+                                    message: 'Please sign in.',
+                                    autoClose: 2000,
+                                });
+                                return redirect('/auth');
+                            }
+                            return redirect(`/users/${user.uid}/ideas`);
+                        },
+                    },
+                    {
+                        path: ':id/ideas',
+                        loader: userIdeasLoader,
+                        element: <ViewIdeas />,
+                    },
+                ],
             },
         ],
     },

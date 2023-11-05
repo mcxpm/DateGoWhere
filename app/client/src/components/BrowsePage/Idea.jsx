@@ -61,7 +61,7 @@ const Idea = ({ idea }) => {
                 <Button
                     style={{ flex: 1 }}
                     onClick={() => {
-                        navigate(`/ideas/view/${idea.id}`);
+                        navigate(`/ideas/${idea.id}/view`);
                     }}
                 >
                     Show details

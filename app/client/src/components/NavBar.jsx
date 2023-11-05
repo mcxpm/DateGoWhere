@@ -19,7 +19,7 @@ const data = [
     { link: '/', label: 'Home', icon: MdHome },
     { link: '/ideas/browse', label: 'Browse Ideas', icon: MdViewModule },
     { link: '/ideas/create', label: 'Create New Idea', icon: MdPostAdd },
-    { link: '/user/ideas', label: 'Your Ideas', icon: MdPersonSearch },
+    { link: '/users/current/ideas', label: 'Your Ideas', icon: MdPersonSearch },
 ];
 
 export function NavBar() {
