@@ -97,18 +97,15 @@ const ViewIdea = () => {
                         // size="xl"
                         opened={reviewsOpened}
                         onClose={close}
-                        title={
-                            <Stack>
-                                <Overview idea={idea} />
-
-                                <Button onClick={toggleView}>
-                                    {isAddingReview ? 'Return' : 'Add review'}
-                                </Button>
-                                <Divider />
-                            </Stack>
-                        }
+                        title={<Overview idea={idea} />}
                         scrollAreaComponent={ScrollArea.Autosize}
                     >
+                        <Stack>
+                            <Button onClick={toggleView}>
+                                {isAddingReview ? 'Return' : 'Add review'}
+                            </Button>
+                            <Divider />
+                        </Stack>
                         {isAddingReview ? (
                             <CreateReview />
                         ) : (
@@ -134,8 +131,9 @@ const ViewIdea = () => {
                     <Group justify="space-between">
                         <ActionIcon
                             onClick={reportHandlers.open}
-                            variant="filled"
-                            size={36}
+                            variant="outline"
+                            color="yellow"
+                            size={'lg'}
                         >
                             <MdOutlineReportProblem stroke={1.5} />
                         </ActionIcon>
