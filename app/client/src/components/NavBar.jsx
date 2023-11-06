@@ -4,7 +4,6 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import {
     MdHome,
     MdLogout,
-    MdManageAccounts,
     MdPersonSearch,
     MdPostAdd,
     MdViewModule,
@@ -71,19 +70,6 @@ export function NavBar() {
                             email={user.email}
                             image={user.photoURL}
                         />
-                        <a
-                            href="#"
-                            className={classes.link}
-                            onClick={(event) => event.preventDefault()}
-                        >
-                            <MdManageAccounts
-                                className={classes.linkIcon}
-                                stroke={1.5}
-                                size={20}
-                            />
-                            <span>Manage account</span>
-                        </a>
-
                         <UnstyledButton
                             className={classes.link}
                             onClick={() => {

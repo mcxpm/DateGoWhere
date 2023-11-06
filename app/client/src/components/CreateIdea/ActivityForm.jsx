@@ -20,7 +20,20 @@ const ActivityForm = ({ idx, activity, handleDiscardActivity, handleSaveActivity
             end: (value) => (value ? null : 'Activity must have an end time'),
             name: isNotEmpty('Name cannot be empty'),
             location: {
-                description: isNotEmpty('Location cannot be empty'),
+                description: (value) => {
+                    if (value == null) return ' Location cannot be empty';
+                    if (form.values.location.name != '') {
+                        return null;
+                    }
+                    if (form.values.location.name == '') {
+                        return 'Please choose a valid location';
+                    }
+                },
+                name: (value) => {
+                    if (value != '') {
+                        form.clearFieldError('location.description');
+                    }
+                },
             },
             description: isNotEmpty('Description cannot be empty'),
             budget: (value) => {
@@ -83,7 +96,6 @@ const ActivityForm = ({ idx, activity, handleDiscardActivity, handleSaveActivity
                     required
                     {...form.getInputProps('description')}
                 />
-                
 
                 <Grid align="end">
                     <Grid.Col span={6}>
