@@ -3,9 +3,9 @@ import { useNavigate } from 'react-router-dom';
 
 import HeroImage from '/images/hero-image.png';
 
-import classes from './HeroPage.module.css';
+import classes from './Home.module.css';
 
-export default function HeroPage() {
+export default function Home() {
     const navigate = useNavigate();
     return (
         <Box h={'100dvh'}>

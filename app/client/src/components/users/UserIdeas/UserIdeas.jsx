@@ -4,8 +4,9 @@ import { notifications } from '@mantine/notifications';
 import { redirect, useLoaderData, useRevalidator } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
-import { getUser } from '../../utils/AuthUtils';
-import { deleteIdea, getUserIdeas } from '../../utils/IdeaUtils';
+import { getUser } from '../../../utils/AuthUtils';
+import { deleteIdea } from '../../../utils/IdeaUtils';
+import { getUserIdeas } from '../../../utils/UserUtils';
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const loader = async ({ params }) => {
@@ -31,7 +32,7 @@ export const loader = async ({ params }) => {
     return ideas;
 };
 
-const ViewIdeas = () => {
+const UserIdeas = () => {
     const ideas = useLoaderData();
     const navigate = useNavigate();
     const revalidator = useRevalidator();
@@ -148,4 +149,4 @@ const ViewIdeas = () => {
         </Container>
     );
 };
-export default ViewIdeas;
+export default UserIdeas;

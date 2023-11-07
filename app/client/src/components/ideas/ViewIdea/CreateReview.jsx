@@ -4,8 +4,8 @@ import { notifications } from '@mantine/notifications';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useParams } from 'react-router-dom';
 
-import { auth } from '../../config/firebase';
-import { createReview } from '../../utils/IdeaUtils';
+import { auth } from '../../../config/firebase';
+import { createReview } from '../../../utils/ReviewUtils';
 
 const CreateReview = () => {
     const { id: ideaId } = useParams();

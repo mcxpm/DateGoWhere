@@ -10,19 +10,21 @@ import { createBrowserRouter, Outlet, redirect, RouterProvider } from 'react-rou
 
 import AuthenticationForm, {
     loader as AuthLoader,
-} from './components/Auth/AuthenticationForm';
-import { ForgotPassword } from './components/Auth/ForgotPassword';
+} from './components/auth/AuthenticationForm';
+import { ForgotPassword } from './components/auth/ForgotPassword';
+import Home from './components/home/Home';
 import BrowsePage, {
     loader as browsePageLoader,
-} from './components/BrowsePage/BrowsePage';
+} from './components/ideas/BrowseIdeas/BrowseIdeas';
 import CreateIdea, {
     loader as createIdeaLoader,
-} from './components/CreateIdea/CreateIdea';
-import EditIdea, { loader as editIdeaLoader } from './components/Edit/EditIdea';
-import HeroPage from './components/HeroPage/HeroPage';
+} from './components/ideas/CreateIdea/CreateIdea';
+import EditIdea, { loader as editIdeaLoader } from './components/ideas/EditIdea/EditIdea';
+import ViewIdea, { loader as viewIdeaLoader } from './components/ideas/ViewIdea/ViewIdea';
 import TwoPanelLayout from './components/TwoPanelLayout';
-import ViewIdeas, { loader as userIdeasLoader } from './components/UserIdeas/ViewIdeas';
-import ViewIdea, { loader as viewIdeaLoader } from './components/ViewIdea/ViewIdea';
+import UserIdeas, {
+    loader as userIdeasLoader,
+} from './components/users/UserIdeas/UserIdeas';
 import ErrorPage from './ErrorPage';
 import Layout from './Layout';
 import { getUser } from './utils/AuthUtils';
@@ -35,7 +37,7 @@ const router = createBrowserRouter([
         children: [
             {
                 index: true,
-                element: <HeroPage />,
+                element: <Home />,
             },
             {
                 path: 'auth',
@@ -103,7 +105,7 @@ const router = createBrowserRouter([
                     {
                         path: ':id/ideas',
                         loader: userIdeasLoader,
-                        element: <ViewIdeas />,
+                        element: <UserIdeas />,
                     },
                 ],
             },

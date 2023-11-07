@@ -1,4 +1,4 @@
-import { addDoc, arrayRemove, arrayUnion, collection, deleteDoc, doc, documentId, getDoc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
+import { addDoc, arrayRemove, arrayUnion, collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore';
 
 import { auth, db } from '../config/firebase';
 
@@ -19,21 +19,6 @@ export const getIdea = async (id) => {
 
 export const getIdeaRefFromId = async (id) => {
     return doc(db, 'ideas', id);
-}
-
-export const getUserIdeas = async (uid) => {
-    const userRef = doc(db, 'users', uid);
-    const docSnap = await getDoc(userRef);
-    if (!docSnap.exists()) {
-        return [];
-    }
-    const ideaIdList = docSnap.data().ideas;
-    if (!ideaIdList || !ideaIdList.length) {
-        return []
-    }
-    const q = query(collection(db, "ideas"), where(documentId(), "in", ideaIdList));
-    const docs = await getDocs(q);
-    return docs.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 }
 
 export const createIdea = async () => {
@@ -77,39 +62,3 @@ export const deleteIdea = async (id) => {
     const deleteIdeaDoc = deleteDoc(ideaRef)
     return Promise.all([deleteIdeaDoc, deleteIdeaIdFromUser])
 };
-
-export const createReview = async (id, review) => {
-    console.log(id, review)
-    const ideaRef = doc(db, 'ideas', id);
-    console.log({
-        review: {
-            createdAt: new Date(),
-            createdBy: auth.currentUser.displayName,
-            ...review
-        }
-    })
-    return await updateDoc(ideaRef, {
-        reviews: arrayUnion({
-            createdAt: new Date(),
-            createdBy: auth.currentUser.displayName,
-            ...review
-        })
-    });
-};
-
-export const createReport = async (id, report) => {
-    try {
-        return await addDoc(collection(db, 'reports'), {
-            createdBy: auth.currentUser.uid,
-            ideaID: id,
-            ...report
-        });
-    }
-    catch (e) {
-        console.log("Error creating report", e)
-        throw e;
-    }
-};
-
-
-export const deleteReview = async () => { };

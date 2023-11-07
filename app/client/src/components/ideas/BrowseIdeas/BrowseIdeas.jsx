@@ -2,7 +2,7 @@ import { Box, Grid, Text } from '@mantine/core';
 import { useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
 
-import { getIdeas } from '../../utils/IdeaUtils';
+import { getIdeas } from '../../../utils/IdeaUtils';
 import Idea from './Idea';
 import SearchBar from './SearchBar';
 
@@ -11,7 +11,7 @@ export async function loader() {
     return await getIdeas();
 }
 
-export default function BrowsePage() {
+export default function BrowseIdeas() {
     const ideas = useLoaderData();
     const [filteredIdeas, setFilteredIdeas] = useState(ideas);
 

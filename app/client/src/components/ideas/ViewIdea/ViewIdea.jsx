@@ -17,7 +17,7 @@ import { useRef, useState } from 'react';
 import { MdReportProblem, MdShare } from 'react-icons/md';
 import { useLoaderData } from 'react-router-dom';
 
-import { getIdea } from '../../utils/IdeaUtils';
+import { getIdea } from '../../../utils/IdeaUtils';
 import Map from '../Map';
 import CreateReport from './CreateReport';
 import CreateReview from './CreateReview';

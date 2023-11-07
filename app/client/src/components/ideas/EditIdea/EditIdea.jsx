@@ -17,9 +17,9 @@ import { useRef } from 'react';
 import { MdAdd, MdEdit, MdSave, MdUpload, MdVisibility } from 'react-icons/md';
 import { redirect, useLoaderData, useNavigate, useParams } from 'react-router-dom';
 
-import useIdea from '../../hooks/use-idea';
-import { getUser } from '../../utils/AuthUtils';
-import { getIdea } from '../../utils/IdeaUtils';
+import useIdea from '../../../hooks/use-idea';
+import { getUser } from '../../../utils/AuthUtils';
+import { getIdea } from '../../../utils/IdeaUtils';
 import ActivityForm from '../CreateIdea/ActivityForm';
 import classes from '../CreateIdea/CreateIdea.module.css';
 import Map from '../Map';
