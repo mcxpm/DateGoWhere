@@ -74,7 +74,8 @@ const ViewIdea = () => {
                                             {activity.name}
                                         </Text>
                                         &nbsp;@&nbsp;
-                                        {activity.location.name}
+                                        {activity.location.name ||
+                                            activity.location.description}
                                     </Text>
                                 </Accordion.Control>
                                 <Accordion.Panel>

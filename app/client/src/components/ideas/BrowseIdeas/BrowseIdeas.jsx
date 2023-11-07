@@ -1,4 +1,4 @@
-import { Box, Grid, Text } from '@mantine/core';
+import { Box, Grid, Select, Text } from '@mantine/core';
 import { useState } from 'react';
 import { useLoaderData } from 'react-router-dom';
 
@@ -14,12 +14,55 @@ export async function loader() {
 export default function BrowseIdeas() {
     const ideas = useLoaderData();
     const [filteredIdeas, setFilteredIdeas] = useState(ideas);
+    const [filter, setFilter] = useState('');
+    const [query, setQuery] = useState('');
+
+    const handleSearchAndFilter = (_query, _filter) => {
+        if (!_query && !_filter) return setFilteredIdeas(ideas);
+        const query = _query.toLowerCase();
+        let filteredIdeas = ideas.filter(
+            (idea) =>
+                idea.title.toLowerCase().includes(query) ||
+                idea.description?.toLowerCase().includes(query) ||
+                idea.tags?.map((tag) => tag.toLowerCase()).includes(query),
+        );
+        if (!_filter) {
+            return setFilteredIdeas(filteredIdeas);
+        }
+        filteredIdeas = filteredIdeas.filter((idea) => idea.tags?.includes(_filter));
+        setFilteredIdeas(filteredIdeas);
+    };
 
     return (
         <Box p={'xl'}>
             <Grid>
-                <Grid.Col span={{ base: 12 }}>
-                    <SearchBar ideas={ideas} setFilteredIdeas={setFilteredIdeas} />
+                <Grid.Col span={{ base: 12, md: 8 }}>
+                    <SearchBar
+                        filter={filter}
+                        setQuery={setQuery}
+                        handleSearchAndFilter={handleSearchAndFilter}
+                    />
+                </Grid.Col>
+                <Grid.Col span={{ base: 12, md: 4 }}>
+                    <Select
+                        label="Filter by tags"
+                        placeholder="Pick value"
+                        value={filter}
+                        data={[
+                            'Romantic',
+                            'Outdoor',
+                            'Food',
+                            'Sport',
+                            'Dance',
+                            'Cultural',
+                        ]}
+                        clearable
+                        onChange={(value) => {
+                            setFilter(value);
+                            handleSearchAndFilter(query, value);
+                        }}
+                        size="md"
+                    />
                 </Grid.Col>
                 {filteredIdeas.length ? (
                     filteredIdeas.map((idea) => (

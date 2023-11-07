@@ -1,23 +1,42 @@
-import { Avatar, Button, Group, Paper, Rating, Text, Textarea } from '@mantine/core';
-import { isNotEmpty, useForm } from '@mantine/form';
+import {
+    Avatar,
+    Button,
+    Group,
+    Paper,
+    Rating,
+    Stack,
+    Text,
+    Textarea,
+} from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { auth } from '../../../config/firebase';
 import { createReview } from '../../../utils/ReviewUtils';
 
 const CreateReview = () => {
     const { id: ideaId } = useParams();
-    const [user, loading] = useAuthState(auth);
+    const [user] = useAuthState(auth);
+
+    const navigate = useNavigate();
 
     const form = useForm({
+        validateInputOnChange: true,
         initialValues: {
             rating: 2.5,
             description: '',
         },
         validate: {
-            description: isNotEmpty('Please enter a description'),
+            description: (value) => {
+                if (!value) {
+                    return 'Please enter a description';
+                }
+                if (value.length > 250) {
+                    return 'Too many characters';
+                }
+            },
         },
     });
 
@@ -42,12 +61,17 @@ const CreateReview = () => {
         }
     };
 
-    if (loading) {
-        return <div className="">loading...</div>;
-    }
-
     if (!user) {
-        return <div className="">please sign in...</div>;
+        return (
+            <Stack mt={'md'}>
+                <Text fz={'sm'} ta={'center'}>
+                    Sign in to leave a review
+                </Text>
+                <Button onClick={() => navigate('/auth')} variant="outline">
+                    Sign In
+                </Button>
+            </Stack>
+        );
     }
 
     return (
@@ -87,6 +111,9 @@ const CreateReview = () => {
                     required
                     {...form.getInputProps('description')}
                 />
+                <Text ta={'right'} fz={'xs'} c="dimmed">
+                    {form.values.description.length}/250
+                </Text>
             </Paper>
             <Group justify="flex-end">
                 {/* To settle submit review to firebase */}
