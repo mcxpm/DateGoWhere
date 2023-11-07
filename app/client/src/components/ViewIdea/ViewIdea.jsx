@@ -11,10 +11,10 @@ import {
     Stack,
     Text,
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { useClipboard, useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { useRef, useState } from 'react';
-import { MdOutlineReportProblem } from 'react-icons/md';
+import { MdReportProblem, MdShare } from 'react-icons/md';
 import { useLoaderData } from 'react-router-dom';
 
 import { getIdea } from '../../utils/IdeaUtils';
@@ -42,6 +42,7 @@ export async function loader({ params }) {
 
 const ViewIdea = () => {
     const idea = useLoaderData();
+    const clipboard = useClipboard({ timeout: 500 });
 
     const [reviewsOpened, { open, close }] = useDisclosure(false);
     const [reportOpened, reportHandlers] = useDisclosure(false);
@@ -65,10 +66,10 @@ const ViewIdea = () => {
                         {idea.activities.map((activity) => (
                             <Accordion.Item key={activity.name} value={activity.name}>
                                 <Accordion.Control>
-                                    <Text size="xs" c={'dimmed'} fw={500}>
+                                    <Text size="sm" c={'dimmed'} fw={500}>
                                         {activity.start} - {activity.end}{' '}
                                     </Text>
-                                    <Text truncate="end">
+                                    <Text>
                                         <Text component="span" fw={700}>
                                             {activity.name}
                                         </Text>
@@ -77,11 +78,11 @@ const ViewIdea = () => {
                                     </Text>
                                 </Accordion.Control>
                                 <Accordion.Panel>
-                                    <Text size="sm" fw={700} fs="italic">
+                                    {/* <Text size="sm" fw={700} fs="italic">
                                         Author Description
-                                    </Text>
+                                    </Text> */}
                                     <Text size="sm">{activity.description}</Text>
-                                    <Text size="xs" c={'dimmed'} fw={500}>
+                                    <Text size="sm" c={'dimmed'} fw={500} mt={'md'}>
                                         Estimated Damage : ${activity.budget}
                                     </Text>
                                 </Accordion.Panel>
@@ -130,15 +131,29 @@ const ViewIdea = () => {
 
                     <Group justify="space-between">
                         <ActionIcon
-                            onClick={reportHandlers.open}
+                            onClick={() => {
+                                clipboard.copy(`${window.location.href}`);
+                                notifications.show({
+                                    color: 'green',
+                                    title: 'Link copied to clipboard',
+                                    autoClose: 2000,
+                                });
+                            }}
                             variant="outline"
-                            color="yellow"
+                            color="gray"
                             size={'lg'}
                         >
-                            <MdOutlineReportProblem stroke={1.5} />
+                            <MdShare stroke={1.5} />
                         </ActionIcon>
-
-                        <Button onClick={open} variant="outline" w={'88%'}>
+                        <ActionIcon
+                            onClick={reportHandlers.open}
+                            variant="outline"
+                            color="gray"
+                            size={'lg'}
+                        >
+                            <MdReportProblem stroke={1.5} />
+                        </ActionIcon>
+                        <Button onClick={open} variant="outline" style={{ flexGrow: 1 }}>
                             View Reviews
                         </Button>
                     </Group>

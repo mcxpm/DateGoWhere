@@ -8,11 +8,14 @@ import {
     Image,
     Text,
 } from '@mantine/core';
-import { MdOutlineFavoriteBorder } from 'react-icons/md';
+import { useClipboard } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
+import { MdShare } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 
 const Idea = ({ idea }) => {
     const navigate = useNavigate();
+    const clipboard = useClipboard({ timeout: 500 });
 
     return (
         <Card withBorder>
@@ -66,8 +69,19 @@ const Idea = ({ idea }) => {
                 >
                     Show details
                 </Button>
-                <ActionIcon variant="default" size="lg">
-                    <MdOutlineFavoriteBorder color="red" />
+                <ActionIcon
+                    variant="default"
+                    size="lg"
+                    onClick={() => {
+                        clipboard.copy(`${window.location.origin}/ideas/${idea.id}/view`);
+                        notifications.show({
+                            color: 'green',
+                            title: 'Link copied to clipboard',
+                            autoClose: 2000,
+                        });
+                    }}
+                >
+                    <MdShare />
                 </ActionIcon>
             </Group>
         </Card>
