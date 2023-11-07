@@ -14,7 +14,7 @@ import {
 import { useClipboard, useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { useRef, useState } from 'react';
-import { MdReportProblem, MdShare } from 'react-icons/md';
+import { MdAdd, MdKeyboardBackspace, MdReportProblem, MdShare } from 'react-icons/md';
 import { useLoaderData } from 'react-router-dom';
 
 import { getIdea } from '../../../utils/IdeaUtils';
@@ -103,7 +103,12 @@ const ViewIdea = () => {
                         scrollAreaComponent={ScrollArea.Autosize}
                     >
                         <Stack>
-                            <Button onClick={toggleView}>
+                            <Button
+                                onClick={toggleView}
+                                leftSection={
+                                    isAddingReview ? <MdKeyboardBackspace /> : <MdAdd />
+                                }
+                            >
                                 {isAddingReview ? 'Return' : 'Add review'}
                             </Button>
                             <Divider />

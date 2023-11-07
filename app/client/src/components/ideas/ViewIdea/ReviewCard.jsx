@@ -2,6 +2,13 @@ import { Avatar, Badge, Group, Paper, Text } from '@mantine/core';
 import { MdGrade } from 'react-icons/md';
 
 const ReviewCard = ({ reviewData }) => {
+    if (reviewData.length == 0) {
+        return (
+            <Text fz={'sm'} ta={'center'} mt={'sm'}>
+                No reviews available
+            </Text>
+        );
+    }
     return reviewData.map((review) => (
         <Paper key={review.createdBy} p={'md'} m={'xs'} withBorder shadow="xl">
             <Group>
