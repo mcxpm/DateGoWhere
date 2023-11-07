@@ -14,20 +14,30 @@ npm run dev
 
 ## Tech Stack
 
--   React Tooling: [Vite](https://vitejs.dev/)
+### Frontend
+
+-   Frontend Tooling: [Vite](https://vitejs.dev/)
+-   Framework: [React](https://react.dev/)
 -   Routing: [react-router-dom](https://reactrouter.com/en/main)
 -   UI Library: [Mantine](https://mantine.dev/)
     -   [docs](https://mantine.dev/pages/getting-started/)
     -   [UI Components](https://ui.mantine.dev/)
-    -   [Forms]
 -   Form Mangement: [Mantine Form](https://mantine.dev/form/validation/)
 -   Icons: [react-icons](https://react-icons.github.io/react-icons)
+-   Backend Integration: [Firebase Web SDK](https://firebase.google.com/docs/web/setup)
+-   Other utility libraries
+    -   dayjs
+    -   @mantine/dates
+    -   @mantine/hooks
+    -   @mantine/modals
+    -   @mantine/notifications
+    -   react-firebase-hooks
 
-Other utility packages
+### Backend
 
--   Firebase Web SDK
--   @mantine/dates
--   @mantine/hooks
+-   [Firebase](https://firebase.google.com/)
+    -   Authentication Service: [Firebase Authentication](https://firebase.google.com/docs/auth)
+    -   Document Database Service: [Firestore](https://firebase.google.com/docs/firestore)
 
 ## Code Linting & Formatting
 
@@ -57,7 +67,7 @@ You may want to change your VSCode settings to enable auto-formatting on save.
 
 ## Conventional Commits
 
-It is recommended that you follow Conventional Commits when committing to this repository, although this rule is not currently enforced.
+It is recommended that you follow Conventional Commits when committing to this repository, although this rule is not strictly enforced.
 
 Learn more about conventional commits [here](https://www.conventionalcommits.org/en/v1.0.0/)
 
