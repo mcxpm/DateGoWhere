@@ -12,6 +12,7 @@ import AuthenticationForm, {
     loader as AuthLoader,
 } from './components/auth/AuthenticationForm';
 import { ForgotPassword } from './components/auth/ForgotPassword';
+import ErrorPage from './components/GlobalError';
 import Home from './components/home/Home';
 import BrowsePage, {
     loader as browsePageLoader,
@@ -21,12 +22,11 @@ import CreateIdea, {
 } from './components/ideas/CreateIdea/CreateIdea';
 import EditIdea, { loader as editIdeaLoader } from './components/ideas/EditIdea/EditIdea';
 import ViewIdea, { loader as viewIdeaLoader } from './components/ideas/ViewIdea/ViewIdea';
+import Layout from './components/Layout';
 import TwoPanelLayout from './components/TwoPanelLayout';
 import UserIdeas, {
     loader as userIdeasLoader,
 } from './components/users/UserIdeas/UserIdeas';
-import ErrorPage from './ErrorPage';
-import Layout from './Layout';
 import { getUser } from './utils/AuthUtils';
 
 const router = createBrowserRouter([
